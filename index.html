@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Local Minecraft Bedrock add-on analyzer for WATI Core.">
+  <title>WATI Catalog Builder v1.0.0</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="hero">
+  <img src="assets/wati_core.png" alt="WATI Core">
+  <div>
+    <p class="eyebrow">WATI ECOSYSTEM</p>
+    <h1>Catalog Builder</h1>
+    <p data-i18n="hero.description">Analiza add-ons de Minecraft Bedrock y genera contribuciones normalizadas para WATI Core.</p>
+  </div>
+  <div class="hero-tools">
+    <span class="release">VERSION 1.0.0</span>
+    <div class="language-switch" role="group" aria-label="Interface language">
+      <button type="button" class="lang-btn" data-ui-lang="es_MX">ES-MX</button>
+      <button type="button" class="lang-btn" data-ui-lang="en_US">EN-US</button>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="notice"><b data-i18n="privacy.title">Privacidad:</b> <span data-i18n="privacy.body">los paquetes se leen y procesan localmente. Esta página no los sube a ningún servidor.</span></section>
+
+  <section class="panel">
+    <h2 data-i18n="load.title">1. Cargar paquete</h2>
+    <div id="drop-zone" class="drop-zone" role="button" tabindex="0">
+      <strong data-i18n="load.drop">Arrastra aquí .mcaddon, .mcpack o .zip</strong>
+      <span data-i18n="load.hint">Puedes cargar juntos el BP y el RP para obtener resultados más completos.</span>
+    </div>
+    <input id="file-picker" type="file" accept=".zip,.mcpack,.mcaddon" multiple hidden>
+    <div class="actions">
+      <button id="analyze-btn" disabled data-i18n="actions.analyze">Analizar paquete</button>
+      <button id="reset-btn" class="secondary" data-i18n="actions.reset">Limpiar</button>
+    </div>
+    <p id="status" class="status" aria-live="polite"></p>
+  </section>
+
+  <section class="panel">
+    <h2 data-i18n="identity.title">2. Identificación del proyecto</h2>
+    <p class="helper" data-i18n="identity.helper">El Builder propone estos datos a partir del manifest, las traducciones y archivos de licencia. Revísalos antes de exportar.</p>
+    <div class="form-grid">
+      <label><span data-i18n="identity.publicName">Nombre público</span><input id="source-name" data-i18n-placeholder="placeholders.publicName" placeholder="Modern Furniture"></label>
+      <label><span data-i18n="identity.sourceId">ID de fuente</span><input id="source-id" pattern="[a-z0-9_-]+" data-i18n-placeholder="placeholders.sourceId" placeholder="modern_furniture"></label>
+      <label><span data-i18n="identity.author">Autor</span><input id="author" data-i18n-placeholder="placeholders.author" placeholder="Autor o equipo"></label>
+      <label><span data-i18n="identity.publicVersion">Versión pública analizada</span><input id="version" placeholder="13.7"></label>
+      <label><span data-i18n="identity.manifestVersion">Versión interna del manifest</span><input id="manifest-version" readonly placeholder="1.0.2"></label>
+      <label><span data-i18n="identity.license">Licencia</span>
+        <select id="license">
+          <option value="Unknown / Not verified" data-i18n="license.unknown">Unknown / Not verified</option>
+          <option value="MIT">MIT</option><option value="Apache-2.0">Apache-2.0</option><option value="GPL-2.0">GPL-2.0</option><option value="GPL-3.0">GPL-3.0</option>
+          <option value="All Rights Reserved" data-i18n="license.arr">All Rights Reserved</option><option value="Custom" data-i18n="license.custom">Custom</option>
+        </select>
+      </label>
+      <label><span data-i18n="identity.aliases">Alias separados por comas</span><input id="aliases" data-i18n-placeholder="placeholders.aliases" placeholder="modern, modernfurniture, furniture"></label>
+      <label><span data-i18n="identity.namespaces">Namespaces detectados</span><input id="namespaces" readonly placeholder="f"></label>
+      <label class="wide"><span data-i18n="identity.officialPage">Página oficial</span><input id="official-url" type="url" placeholder="https://www.curseforge.com/..."></label>
+    </div>
+    <div id="metadata-evidence" class="metadata-evidence"></div>
+
+    <div class="language-settings">
+      <h3 data-i18n="languages.title">Idiomas de nombres</h3>
+      <p data-i18n="languages.helper">Elige qué nombres se guardarán en la contribución. Los valores faltantes se generan desde el identifier y se marcan como tales.</p>
+      <div class="form-grid language-grid">
+        <label><span data-i18n="languages.export">Guardar al exportar</span>
+          <select id="export-languages">
+            <option value="both" data-i18n="languages.both">Español (México) e English (US)</option>
+            <option value="es_MX">Español (México)</option>
+            <option value="en_US">English (US)</option>
+          </select>
+        </label>
+        <label><span data-i18n="languages.primary">Idioma principal</span>
+          <select id="primary-locale"><option value="es_MX">Español (México)</option><option value="en_US">English (US)</option></select>
+        </label>
+        <label><span data-i18n="languages.preview">Idioma de vista previa</span>
+          <select id="preview-locale"><option value="es_MX">Español (México)</option><option value="en_US">English (US)</option></select>
+        </label>
+      </div>
+      <p id="language-status" class="language-status"></p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-title"><h2 data-i18n="results.title">3. Resultados</h2><button id="export-btn" disabled data-i18n="actions.export">Exportar contribución ZIP</button></div>
+    <div id="summary" class="summary"></div>
+
+    <details open><summary data-i18n="results.packs">Paquetes detectados</summary><div class="table-wrap"><table><thead><tr><th data-i18n="table.type">Tipo</th><th data-i18n="table.name">Nombre</th><th data-i18n="table.publicVersion">Versión pública</th><th>Manifest</th><th>UUID</th></tr></thead><tbody id="pack-preview"><tr><td colspan="5" class="empty" data-i18n="empty.start">Analiza un paquete para comenzar.</td></tr></tbody></table></div></details>
+
+    <details open><summary data-i18n="results.preview">Vista previa del contenido</summary>
+      <div class="preview-tools">
+        <label class="search-label"><span data-i18n="results.filter">Filtrar vista previa</span><input id="content-search" type="search" data-i18n-placeholder="placeholders.search" placeholder="Identifier, nombre, tipo o categoría"></label>
+        <label class="source-filter-label"><span data-i18n="results.nameSourceFilter">Origen del nombre</span>
+          <select id="name-source-filter">
+            <option value="all" data-i18n="filter.all">Todos</option>
+            <option value="lang" data-i18n="filter.translated">Solo traducciones</option>
+            <option value="generated" data-i18n="filter.generated">Solo generados</option>
+            <option value="manual" data-i18n="filter.manual">Solo editados</option>
+          </select>
+        </label>
+      </div>
+      <div id="generated-name-warning" class="generated-name-warning" hidden></div>
+      <div class="table-wrap"><table><thead><tr><th data-i18n="table.type">Tipo</th><th>Identifier</th><th data-i18n="table.name">Nombre</th><th data-i18n="table.nameOrigin">Origen del nombre</th><th data-i18n="table.category">Categoría</th><th data-i18n="table.internal">Interno</th></tr></thead><tbody id="content-preview"><tr><td colspan="6" class="empty" data-i18n="empty.start">Analiza un paquete para comenzar.</td></tr></tbody></table></div>
+    </details>
+
+    <details open><summary data-i18n="results.issues">Problemas y advertencias</summary><div class="table-wrap"><table><thead><tr><th data-i18n="table.level">Nivel</th><th data-i18n="table.code">Código</th><th data-i18n="table.description">Descripción</th><th data-i18n="table.file">Archivo</th></tr></thead><tbody id="issues"><tr><td colspan="4" class="empty" data-i18n="empty.noAnalysis">Sin análisis.</td></tr></tbody></table></div></details>
+  </section>
+
+  <section class="panel compact"><h2 data-i18n="scope.title">Alcance actual</h2><p data-i18n="scope.body">Detecta manifests, identidad básica del proyecto, objetos, bloques, entidades, traducciones en español mexicano e inglés, recetas JSON y obtención directa mediante loot tables de bloques y entidades. También distingue la versión pública de la versión interna del manifest, detecta licencias comunes y avisa cuando falta el Resource Pack. Trades, feature rules, cultivos avanzados y sistemas controlados por scripts todavía requieren revisión manual.</p></section>
+</main>
+<footer>WATI Catalog Builder · AresgettaYT · WATI Catalog Schema v1</footer>
+<script src="catalog-engine.js"></script><script src="app.js"></script>
+</body>
+</html>
