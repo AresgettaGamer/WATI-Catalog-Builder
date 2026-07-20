@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wati.example/schema/v1/report.schema.json",
+  "title": "WATI Catalog Report v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generatorVersion",
+    "summary",
+    "issues"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "generatorVersion": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "packs": {
+      "type": "array"
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "severity",
+          "code",
+          "message"
+        ],
+        "properties": {
+          "severity": {
+            "enum": [
+              "error",
+              "warning",
+              "info"
+            ]
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "metadataEvidence": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

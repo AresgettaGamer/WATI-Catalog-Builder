@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wati.example/schema/v1/source.schema.json",
+  "title": "WATI Catalog Source v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "source"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "generator": {
+      "type": "string"
+    },
+    "generatorVersion": {
+      "type": "string"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "version",
+        "namespaces"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "author": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "namespaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "license": {
+          "type": "string"
+        },
+        "officialUrl": {
+          "type": "string"
+        },
+        "generatedBy": {
+          "type": "string"
+        },
+        "manifestVersion": {
+          "type": "string"
+        },
+        "analyzedPackVersions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "licenseStatus": {
+          "enum": [
+            "not_verified",
+            "detected",
+            "user_provided"
+          ]
+        },
+        "licenseEvidence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "primaryLocale": {
+          "enum": [
+            "es_MX",
+            "en_US"
+          ]
+        },
+        "exportedLocales": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "es_MX",
+              "en_US"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

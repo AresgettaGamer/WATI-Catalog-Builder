@@ -1,0 +1,13 @@
+import fs from 'node:fs/promises';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const engine = require('../catalog-engine.js');
+const target = process.argv[2];
+if (!target) throw new Error('Uso: node tests/node-smoke.mjs <archivo.mcaddon>');
+const data = new Uint8Array(await fs.readFile(target));
+const entries = await engine.flattenArchives([{ name: target.split('/').pop(), data }]);
+const analysis = engine.analyzeEntries(entries, {});
+console.log(JSON.stringify(analysis.report.summary, null, 2));
+const out = engine.exportContribution(analysis);
+await fs.writeFile('/tmp/WATI_Contribution_Smoke.zip', out);
+console.log('Exportado /tmp/WATI_Contribution_Smoke.zip', out.length, 'bytes');

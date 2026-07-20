@@ -1,0 +1,18 @@
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const engine = require('../catalog-engine.js');
+const bp = process.argv[2], rp = process.argv[3];
+if (!bp || !rp) throw new Error('Uso: node tests/verify-generated-names.mjs <BP.mcpack> <RP.mcpack>');
+const inputs=[]; for (const path of [bp,rp]) inputs.push({name:path.split('/').pop(),data:new Uint8Array(await fs.readFile(path))});
+const entries=await engine.flattenArchives(inputs);
+const analysis=engine.analyzeEntries(entries,{exportLocales:['es_MX','en_US'],primaryLocale:'es_MX'});
+const all=[...analysis.content.items,...analysis.content.blocks,...analysis.content.entities];
+const generatedEs=all.filter(e=>e.nameSources.es_MX==='generated');
+const translatedEs=all.filter(e=>e.nameSources.es_MX==='lang');
+assert.equal(generatedEs.length,23);
+assert.equal(translatedEs.length,627);
+assert(analysis.report.issues.some(i=>i.code==='generated_fallback_names'&&i.locale==='es_MX'&&i.count===23));
+assert(analysis.report.issues.some(i=>i.code==='generated_fallback_names'&&i.locale==='en_US'&&i.count===17));
+console.log('Nombres generados y advertencias por idioma aprobados.');

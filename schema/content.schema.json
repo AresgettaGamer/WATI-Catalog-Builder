@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wati.example/schema/v1/content.schema.json",
+  "title": "WATI Catalog Content v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sourceId",
+    "items",
+    "blocks",
+    "entities"
+  ],
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "fallbackName",
+        "internal"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[^:]+:.+$"
+        },
+        "type": {
+          "enum": [
+            "item",
+            "block",
+            "entity"
+          ]
+        },
+        "fallbackName": {
+          "type": "string"
+        },
+        "localizationKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "category": {
+          "type": "string"
+        },
+        "internal": {
+          "type": "boolean"
+        },
+        "sourcePath": {
+          "type": "string"
+        },
+        "localizationLocale": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "nameSource": {
+          "enum": [
+            "lang",
+            "generated",
+            "manual"
+          ]
+        },
+        "names": {
+          "type": "object",
+          "properties": {
+            "es_MX": {
+              "type": "string"
+            },
+            "en_US": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "nameSources": {
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "lang",
+              "generated",
+              "manual"
+            ]
+          }
+        },
+        "localizationKeys": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sourceId": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    },
+    "primaryLocale": {
+      "enum": [
+        "es_MX",
+        "en_US"
+      ]
+    },
+    "exportedLocales": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "es_MX",
+          "en_US"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": true
+}
