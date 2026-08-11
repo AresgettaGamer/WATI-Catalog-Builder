@@ -1,28 +1,103 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://wati.example/schema/v1/acquisition.schema.json",
-  "title": "WATI Catalog Acquisition v1",
+  "$id": "https://wati.example/schema/v2/acquisition.schema.json",
+  "title": "WATI Catalog Acquisition v2",
   "type": "object",
-  "required": ["schemaVersion", "sourceId", "methods"],
+  "required": [
+    "schemaVersion",
+    "format",
+    "sourceId",
+    "methods"
+  ],
   "properties": {
-    "schemaVersion": {"const": 1},
-    "sourceId": {"type": "string"},
-    "coverage": {"type": "string"},
+    "schemaVersion": {
+      "const": 2
+    },
+    "format": {
+      "const": "wati.catalog.acquisition"
+    },
+    "sourceId": {
+      "type": "string"
+    },
+    "coverage": {
+      "type": "string"
+    },
     "methods": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["target", "method", "sourceType", "source", "certainty"],
+        "required": [
+          "target",
+          "method",
+          "sourceType",
+          "source",
+          "certainty",
+          "evidence"
+        ],
         "properties": {
-          "target": {"type": "string"},
-          "method": {"type": "string"},
-          "sourceType": {"type": "string"},
-          "source": {"type": "string"},
-          "certainty": {"enum": ["confirmed", "probable", "manual"]},
-          "details": {"type": "object"}
+          "target": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "certainty": {
+            "enum": [
+              "confirmed",
+              "probable",
+              "manual"
+            ]
+          },
+          "details": {
+            "type": "object"
+          },
+          "evidence": {
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "availability": {
+            "enum": [
+              "direct",
+              "conditional",
+              "random_or_conditional",
+              "unknown"
+            ]
+          },
+          "quantity": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": true
+          },
+          "chance": {
+            "type": "object"
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
         },
         "additionalProperties": true
       }
+    },
+    "probabilityNotice": {
+      "type": "string"
     }
   },
   "additionalProperties": true

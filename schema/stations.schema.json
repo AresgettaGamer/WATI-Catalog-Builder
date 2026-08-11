@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wati.example/schema/v3/stations.schema.json",
+  "title": "WATI Catalog Stations v3",
+  "type": "object",
+  "required": ["schemaVersion", "format", "sourceId", "stations"],
+  "properties": {
+    "schemaVersion": {"const": 3},
+    "format": {"const": "wati.catalog.stations"},
+    "sourceId": {"type": "string"},
+    "primaryLocale": {"enum": ["es_MX", "en_US"]},
+    "exportedLocales": {"type": "array", "items": {"enum": ["es_MX", "en_US"]}},
+    "stations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "tag", "kind", "sourceId", "resolved", "resolvedBy", "confidence", "fallbackName", "recipeTypes", "recipeIds"],
+        "properties": {
+          "id": {"type": "string"},
+          "tag": {"type": "string"},
+          "kind": {"enum": ["item", "block", "virtual"]},
+          "sourceId": {"type": "string"},
+          "resolved": {"type": "boolean"},
+          "resolvedBy": {"type": "string"},
+          "confidence": {"type": "integer", "minimum": 0, "maximum": 3},
+          "runtimeLocalizationKey": {"type": ["string", "null"]},
+          "catalogTranslationKey": {"type": "string"},
+          "fallbackName": {"type": "string"},
+          "names": {"type": "object", "additionalProperties": {"type": "string"}},
+          "nameSources": {"type": "object", "additionalProperties": {"enum": ["lang", "generated", "manual"]}},
+          "localizationKeys": {"type": "object", "additionalProperties": {"type": ["string", "null"]}},
+          "contentRef": {
+            "type": ["object", "null"],
+            "properties": {
+              "type": {"enum": ["item", "block"]},
+              "id": {"type": "string"}
+            },
+            "additionalProperties": false
+          },
+          "recipeTypes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "recipeIds": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

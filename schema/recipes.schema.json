@@ -1,21 +1,51 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://wati.example/schema/v1/recipes.schema.json",
-  "title": "WATI Catalog Recipes v1",
+  "$id": "https://wati.example/schema/v3/recipes.schema.json",
+  "title": "WATI Catalog Recipes v3",
   "type": "object",
-  "required": ["schemaVersion", "sourceId", "recipes"],
+  "required": ["schemaVersion", "format", "sourceId", "recipes"],
   "properties": {
-    "schemaVersion": {"const": 1},
+    "schemaVersion": {"const": 3},
+    "format": {"const": "wati.catalog.recipes"},
     "sourceId": {"type": "string"},
     "recipes": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "type"],
+        "required": ["id", "type", "sourceId", "tags", "unlock"],
         "properties": {
           "id": {"type": "string"},
           "type": {"enum": ["shaped", "shapeless", "furnace", "brewing_mix", "brewing_container", "smithing_transform", "smithing_trim"]},
+          "sourceId": {"type": "string"},
           "tags": {"type": "array", "items": {"type": "string"}},
+          "group": {"type": ["string", "null"]},
+          "priority": {"type": ["number", "null"]},
+          "unlock": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type"],
+              "properties": {
+                "type": {"enum": ["item", "tag", "context", "unknown"]},
+                "value": {"type": "string"},
+                "count": {"type": "number"},
+                "raw": {}
+              },
+              "additionalProperties": true
+            }
+          },
+          "station": {
+            "type": ["object", "null"],
+            "properties": {
+              "id": {"type": "string"},
+              "tag": {"type": "string"},
+              "kind": {"enum": ["item", "block", "virtual"]},
+              "resolved": {"type": "boolean"},
+              "resolvedBy": {"type": "string"},
+              "confidence": {"type": "integer", "minimum": 0, "maximum": 3}
+            },
+            "additionalProperties": true
+          },
           "sourcePath": {"type": "string"},
           "warnings": {"type": "array", "items": {"type": "string"}}
         },

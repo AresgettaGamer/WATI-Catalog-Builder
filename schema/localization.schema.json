@@ -1,46 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://wati.example/schema/v1/localization.schema.json",
-  "title": "WATI Catalog Localization v1",
+  "$id": "https://wati.example/schema/v3/localization.schema.json",
+  "title": "WATI Catalog Localization v3",
   "type": "object",
-  "required": [
-    "schemaVersion",
-    "sourceId",
-    "locales"
-  ],
+  "required": ["schemaVersion", "format", "sourceId", "locales"],
   "properties": {
-    "schemaVersion": {
-      "const": 1
-    },
-    "sourceId": {
-      "type": "string"
-    },
-    "locales": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "additionalProperties": {
-          "type": "string"
-        }
-      }
-    },
-    "primaryLocale": {
-      "enum": [
-        "es_MX",
-        "en_US"
-      ]
-    },
-    "includedLocales": {
-      "type": "array",
-      "items": {
-        "enum": [
-          "es_MX",
-          "en_US"
-        ]
-      },
-      "minItems": 1,
-      "uniqueItems": true
-    }
+    "schemaVersion": {"const": 3},
+    "format": {"const": "wati.catalog.localization"},
+    "sourceId": {"type": "string"},
+    "primaryLocale": {"enum": ["es_MX", "en_US"]},
+    "includedLocales": {"type": "array", "items": {"enum": ["es_MX", "en_US"]}, "minItems": 1, "uniqueItems": true},
+    "locales": {"type": "object", "additionalProperties": {"type": "object", "additionalProperties": {"type": "string"}}}
   },
   "additionalProperties": true
 }

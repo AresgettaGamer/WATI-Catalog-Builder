@@ -1,0 +1,318 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wati.example/schema/v1/knowledge.schema.json",
+  "title": "WATI Catalog Knowledge v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "format",
+    "sourceId",
+    "coverage",
+    "entryProfiles",
+    "lootProfiles",
+    "habitats",
+    "worldGeneration",
+    "structures"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "format": {
+      "const": "wati.catalog.knowledge"
+    },
+    "sourceId": {
+      "type": "string"
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "acquisition": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "world": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "entryProfiles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "acquisitionMethodIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "habitats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "entity",
+          "certainty",
+          "evidence"
+        ],
+        "properties": {
+          "entity": {
+            "type": "string"
+          },
+          "populationControl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "biomeTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "excludedBiomeTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "biomes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "excludedBiomes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "certainty": {
+            "enum": [
+              "confirmed",
+              "probable",
+              "manual"
+            ]
+          },
+          "evidence": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "worldGeneration": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "feature",
+          "blocks",
+          "certainty",
+          "evidence"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "feature": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "replaceBlocks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "biomeTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "excludedBiomeTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "biomes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "excludedBiomes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "placementPass": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "certainty": {
+            "enum": [
+              "confirmed",
+              "probable",
+              "manual"
+            ]
+          },
+          "evidence": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "structures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "evidence"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "step": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "startPool": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "maxDepth": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "placements": {
+            "type": "array"
+          },
+          "evidence": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "lootProfiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "context",
+          "evidence"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "context": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "directOutputs": {
+            "type": "array"
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence": {
+            "type": "object"
+          },
+          "resolvedItems": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

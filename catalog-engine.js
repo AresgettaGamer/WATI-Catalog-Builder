@@ -5,8 +5,12 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  const VERSION = "1.0.0";
-  const SCHEMA_VERSION = 1;
+  const VERSION = "1.2.1";
+  const RELEASE_CHANNEL = "stable";
+  const SCHEMA_VERSION = 3;
+  const RECIPE_SCHEMA_VERSION = 3;
+  const ACQUISITION_SCHEMA_VERSION = 2;
+  const KNOWLEDGE_SCHEMA_VERSION = 1;
   const textDecoder = new TextDecoder("utf-8");
   const textEncoder = new TextEncoder();
 
@@ -159,6 +163,113 @@
     const value = String(id || "unknown").split(":").pop().replace(/[_./-]+/g, " ").trim();
     return value.replace(/\b\w/g, c => c.toUpperCase());
   }
+
+
+  const ES_GENERATED_HEADS = Object.freeze({
+    bottle:["Botella","f"], boots:["Botas","fp"], chestplate:["Peto","m"], helmet:["Casco","m"], leggings:["Pantalones","mp"],
+    heart:["Corazón","m"], axe:["Hacha","f"], hoe:["Azada","f"], pickaxe:["Pico","m"], shovel:["Pala","f"], spear:["Lanza","f"], sword:["Espada","f"], blade:["Hoja","f"],
+    star:["Estrella","f"], orb:["Orbe","m"], socks:["Calcetines","mp"], cloak:["Capa","f"], quiver:["Carcaj","m"], pendant:["Colgante","m"], ring:["Anillo","m"],
+    firework:["Fuego artificial","m"], crystal:["Cristal","m"], shield:["Escudo","m"], vial:["Vial","m"], rod:["Vara","f"], totem:["Tótem","m"], magnet:["Imán","m"], portal:["Portal","m"],
+    scroll:["Pergamino","m"], arrow:["Flecha","f"], door:["Puerta","f"], scarecrow:["Espantapájaros","m"], torch:["Antorcha","f"], plant:["Planta","f"], vines:["Enredaderas","fp"],
+    hammer:["Martillo","m"], loot:["Botín","m"], bush:["Arbusto","m"], blossom:["Flor","f"], grass:["Hierba","f"], potion:["Poción","f"], runestone:["Piedra rúnica","f"],
+    sign:["Letrero","m"], button:["Botón","m"], egg:["Huevo","m"], eggs:["Huevos","mp"], brick:["Ladrillo","m"], bricks:["Ladrillos","mp"], pillar:["Pilar","m"], wall:["Muro","m"],
+    slab:["Losa","f"], stairs:["Escaleras","fp"], fence:["Valla","f"], gate:["Puerta de valla","f"], table:["Mesa","f"], block:["Bloque","m"], ore:["Mena","f"], ingot:["Lingote","m"],
+    nugget:["Pepita","f"], dust:["Polvo","m"], book:["Libro","m"], catalyst:["Catalizador","m"], chest:["Cofre","m"], sapling:["Retoño","m"], seed:["Semilla","f"], seeds:["Semillas","fp"],
+    mushroom:["Hongo","m"], leaf:["Hoja","f"], leaves:["Hojas","fp"], juice:["Jugo","m"], armor:["Armadura","f"], tool:["Herramienta","f"], head:["Cabeza","f"],
+    skull:["Cráneo","m"], shell:["Caparazón","m"], fragment:["Fragmento","m"], essence:["Esencia","f"], cloth:["Tela","f"], key:["Llave","f"], compass:["Brújula","f"], gravel:["Grava","f"], sand:["Arena","f"], dirt:["Tierra","f"], soil:["Tierra","f"], stone:["Piedra","f"], cobblestone:["Adoquín","m"],
+    planks:["Tablones","mp"], log:["Tronco","m"], wood:["Madera","f"], trapdoor:["Trampilla","f"], plate:["Placa","f"], carpet:["Alfombra","f"], wool:["Lana","f"],
+    concrete:["Concreto","m"], terracotta:["Terracota","f"], lantern:["Linterna","f"], lamp:["Lámpara","f"], flower:["Flor","f"], stem:["Tallo","m"], fungus:["Hongo","m"], vine:["Enredadera","f"],
+    glass:["Vidrio","m"], pane:["Panel","m"], bed:["Cama","f"], barrel:["Barril","m"], bookshelf:["Estantería","f"], bowl:["Tazón","m"], table:["Mesa","f"],
+    bladrillos:["Ladrillos","mp"], torchflower:["Flor antorcha","f"]
+  });
+  const ES_GENERATED_WORDS = Object.freeze({
+    allay:"Allay", void:"el vacío", light:"luz", crab:"cangrejo", dragon:"dragón", xp:"XP", battle:"batalla", cry:"grito", chorus:"chorus", purpur:"púrpura", end:"End",
+    explorer:"explorador", atlantis:"Atlantis", infinity:"infinito", knowledge:"conocimiento", tool:"herramienta", soul:"alma", fire:"fuego", blaze:"blaze", magma:"magma", cloud:"nube",
+    sculk:"sculk", blood:"sangre", bile:"bilis", pulse:"pulso", netherite:"netherita", mushroom:"hongo", soulbound:"alma vinculada", hunger:"hambre", haste:"celeridad",
+    levitation:"levitación", teleportation:"teletransportación", blue:"azul", red:"rojo", white:"blanco", black:"negro", gray:"gris", light_blue:"azul claro", purple:"morado", pink:"rosa",
+    green:"verde", yellow:"amarillo", orange:"naranja", brown:"marrón", marron:"marrón", cyan:"cian", lime:"verde lima", magenta:"magenta", andesite:"andesita", diorite:"diorita", granite:"granito",
+    limestone:"caliza", shale:"lutita", travertine:"travertino", calcite:"calcita", sandstone:"arenisca", snow:"nieve", ice:"hielo", copper:"cobre", iron:"hierro", gold:"oro",
+    golden:"oro", diamond:"diamante", nickel:"níquel", platinum:"platino", tin:"estaño", ruby:"rubí", sulfur:"azufre", volcano:"volcán", stone:"piedra", blackstone:"piedra negra",
+    nether:"Nether", warped:"distorsionado", crimson:"carmesí", shulk:"shulk", tall:"alto", small:"pequeño", stage:"etapa", no:"sin", ball:"bola", blank:"en blanco", restoration:"restauración",
+    deterioration:"deterioro", deprivation:"privación", division:"división", unification:"unificación", restful:"reposo", long:"larga duración", throwing:"arrojadiza", lingering:"persistente",
+    incendiary:"incendiaria", artifact:"artefacto", artifacts:"artefactos", boss:"jefe", spawner:"generador", direction:"dirección", direction_sign:"señal de dirección", old:"antiguo", training:"entrenamiento"
+  });
+  const ES_GENERATED_ADJECTIVES = Object.freeze({
+    magic:["mágico","mágica","mágicos","mágicas"], corrupted:["corrupto","corrupta","corruptos","corruptas"], explosive:["explosivo","explosiva","explosivos","explosivas"],
+    magnetic:["magnético","magnética","magnéticos","magnéticas"], golden:["dorado","dorada","dorados","doradas"], bloody:["sangriento","sangrienta","sangrientos","sangrientas"],
+    pure:["puro","pura","puros","puras"], vampiric:["vampírico","vampírica","vampíricos","vampíricas"], heavy:["pesado","pesada","pesados","pesadas"], double:["doble","doble","dobles","dobles"],
+    mixed:["mezclado","mezclada","mezclados","mezcladas"], sharper:["más afilado","más afilada","más afilados","más afiladas"], charged:["cargado","cargada","cargados","cargadas"],
+    crushing:["aplastante","aplastante","aplastantes","aplastantes"], supersonic:["supersónico","supersónica","supersónicos","supersónicas"], climbing:["trepador","trepadora","trepadores","trepadoras"],
+    frozen:["helado","helada","helados","heladas"], luminescent:["luminiscente","luminiscente","luminiscentes","luminiscentes"], suspicious:["sospechoso","sospechosa","sospechosos","sospechosas"],
+    sus:["sospechoso","sospechosa","sospechosos","sospechosas"], chiseled:["cincelado","cincelada","cincelados","cinceladas"], cracked:["agrietado","agrietada","agrietados","agrietadas"],
+    polished:["pulido","pulida","pulidos","pulidas"], mossy:["musgoso","musgosa","musgosos","musgosas"], molten:["fundido","fundida","fundidos","fundidas"], smooth:["liso","lisa","lisos","lisas"],
+    blue:["azul","azul","azules","azules"], red:["rojo","roja","rojos","rojas"], white:["blanco","blanca","blancos","blancas"], blanco:["blanco","blanca","blancos","blancas"], black:["negro","negra","negros","negras"],
+    purple:["morado","morada","morados","moradas"], pink:["rosa","rosa","rosas","rosas"], green:["verde","verde","verdes","verdes"], yellow:["amarillo","amarilla","amarillos","amarillas"], brown:["marrón","marrón","marrones","marrones"], marron:["marrón","marrón","marrones","marrones"], gray:["gris","gris","grises","grises"],
+    old:["antiguo","antigua","antiguos","antiguas"], long:["largo","larga","largos","largas"], small:["pequeño","pequeña","pequeños","pequeñas"], tall:["alto","alta","altos","altas"]
+  });
+
+  function idWords(id) {
+    return String(id || "unknown").split(":").pop().replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase().split(/[_./-]+/).filter(Boolean);
+  }
+  function esAdjective(word, gender) {
+    const forms = ES_GENERATED_ADJECTIVES[word];
+    if (!forms) return null;
+    return forms[gender === "f" ? 1 : gender === "mp" ? 2 : gender === "fp" ? 3 : 0];
+  }
+  function spanishDe(value) {
+    if (/^el\s+/i.test(value)) return `del ${value.replace(/^el\s+/i, "")}`;
+    return `de ${value}`;
+  }
+  const ES_GENERATED_EXACT = Object.freeze({
+    battle_cry_orb: "Orbe de grito de batalla",
+    ring_of_infinity: "Anillo del infinito",
+    golden_ring_of_atlantis: "Anillo dorado de Atlantis",
+    ring_of_atlantis: "Anillo de Atlantis",
+    mixed_bottle_heart: "Corazón de botella mezclada"
+  });
+  function generatedSpanishName(id) {
+    const rawId = String(id || "unknown").split(":").pop().toLowerCase();
+    if (ES_GENERATED_EXACT[rawId]) return ES_GENERATED_EXACT[rawId];
+    const tokens = idWords(id);
+    if (!tokens.length) return "Desconocido";
+    let headIndex = -1;
+    for (let i = tokens.length - 1; i >= 0; i--) if (ES_GENERATED_HEADS[tokens[i]]) { headIndex = i; break; }
+    let dynamicHead = null;
+    if (headIndex < 0) {
+      headIndex = tokens.findIndex(token => !ES_GENERATED_WORDS[token] && !ES_GENERATED_ADJECTIVES[token] && !/^(?:of|the|and|no|stage\d+|\d+)$/.test(token));
+      if (headIndex >= 0) {
+        const raw = tokens[headIndex].replace(/^([a-z]+)(\d+)$/, "$1 $2");
+        dynamicHead = [raw.charAt(0).toUpperCase() + raw.slice(1), "m"];
+      }
+    }
+    if (headIndex < 0) {
+      const words = tokens.map(token => ES_GENERATED_WORDS[token] || esAdjective(token, "m") || token.replace(/^stage(\d+)$/, "etapa $1").replace(/^([a-z]+)(\d+)$/, "$1 $2"));
+      const value = words.join(" ").replace(/\bbladrillos\b/i, "ladrillos");
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+    const [head, gender] = dynamicHead || ES_GENERATED_HEADS[tokens[headIndex]];
+    const adjectives = [];
+    const complements = [];
+    const suffixes = [];
+    for (let i = 0; i < tokens.length; i++) {
+      if (i === headIndex || tokens[i] === "of" || tokens[i] === "the" || tokens[i] === "and") continue;
+      const token = tokens[i];
+      const stage = token.match(/^stage(\d+)$/);
+      if (stage) { suffixes.push(`etapa ${stage[1]}`); continue; }
+      if (/^\d+$/.test(token)) { suffixes.push(token); continue; }
+      const adjective = esAdjective(token, gender);
+      if (adjective) { adjectives.push(adjective); continue; }
+      let value = ES_GENERATED_WORDS[token] || ES_GENERATED_HEADS[token]?.[0]?.toLowerCase() || token.replace(/^([a-z]+)(\d+)$/, "$1 $2");
+      if (!ES_GENERATED_WORDS[token]) value = value.charAt(0).toUpperCase() + value.slice(1);
+      complements.push(value);
+    }
+    let result = head;
+    if (adjectives.length) result += ` ${adjectives.join(" ")}`;
+    for (const value of complements) result += ` ${spanishDe(value)}`;
+    if (suffixes.length) result += `, ${suffixes.join(" ")}`;
+    return result;
+  }
+  function generatedNameForLocale(id, locale) { return locale === "es_MX" ? generatedSpanishName(id) : titleCaseId(id); }
   function namespaceOf(id) { return String(id || "").includes(":") ? String(id).split(":", 1)[0] : "minecraft"; }
   function ensureNamespace(id) { return id && !String(id).includes(":") ? `minecraft:${id}` : id; }
   function cleanId(id) { return typeof id === "string" ? ensureNamespace(id.trim()) : null; }
@@ -210,7 +321,269 @@
     const [ns, name] = id.split(":");
     if (type === "block") return [`tile.${ns}:${name}.name`, `tile.${ns}.${name}.name`, `block.${ns}.${name}`];
     if (type === "entity") return [`entity.${ns}:${name}.name`, `entity.${ns}.${name}.name`];
+    if (type === "biome") return [`biome.${ns}:${name}.name`, `biome.${ns}.${name}.name`, `biome.${name}.name`];
+    if (type === "structure") return [`structure.${ns}:${name}.name`, `structure.${ns}.${name}.name`, `structure.${name}.name`];
+    if (type === "ecosystem") return [`ecosystem.${ns}:${name}.name`, `ecosystem.${ns}.${name}.name`];
     return [`item.${ns}:${name}.name`, `item.${ns}.${name}.name`, `item.${ns}:${name}`, `item.${ns}.${name}`];
+  }
+
+
+  function catalogTranslationKey(type, id) {
+    const [ns, name] = String(id || "unknown:unknown").split(":");
+    return `wati.content.${type}.${ns}.${name}`;
+  }
+
+  function firstTexturePath(value) {
+    if (typeof value === "string" && value.trim()) return value.trim();
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        const found = firstTexturePath(item);
+        if (found) return found;
+      }
+    }
+    if (value && typeof value === "object") {
+      for (const key of ["default", "textures", "texture", "path"]) {
+        const found = firstTexturePath(value[key]);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  function buildResourceIndexes(parsed) {
+    const itemTextures = new Map();
+    const terrainTextures = new Map();
+    const clientBlocks = new Map();
+    for (const { path, doc } of parsed) {
+      const name = basename(path).toLowerCase();
+      if (name === "item_texture.json") {
+        for (const [key, descriptor] of Object.entries(doc.texture_data || {})) {
+          const texturePath = firstTexturePath(descriptor);
+          if (texturePath) itemTextures.set(key, texturePath);
+        }
+      } else if (name === "terrain_texture.json") {
+        for (const [key, descriptor] of Object.entries(doc.texture_data || {})) {
+          const texturePath = firstTexturePath(descriptor);
+          if (texturePath) terrainTextures.set(key, texturePath);
+        }
+      } else if (name === "blocks.json" && doc && typeof doc === "object") {
+        for (const [key, descriptor] of Object.entries(doc)) {
+          if (key === "format_version" || !descriptor || typeof descriptor !== "object") continue;
+          clientBlocks.set(cleanId(key), descriptor);
+        }
+      }
+    }
+    return { itemTextures, terrainTextures, clientBlocks };
+  }
+
+  function extractEntryIcon(type, id, def, resourceIndexes) {
+    let textureKey = null;
+    let texturePath = null;
+    let resolvedBy = null;
+    if (type === "item") {
+      const icon = def?.components?.["minecraft:icon"];
+      if (typeof icon === "string") textureKey = icon;
+      else textureKey = firstTexturePath(icon?.textures) || icon?.texture || icon?.value || null;
+      if (textureKey) {
+        texturePath = resourceIndexes.itemTextures.get(textureKey) || null;
+        resolvedBy = texturePath ? "item_component_and_atlas" : "item_component";
+      }
+    } else if (type === "block") {
+      const client = resourceIndexes.clientBlocks.get(id) || resourceIndexes.clientBlocks.get(id.split(":").pop());
+      const clientTexture = client?.textures;
+      textureKey = typeof clientTexture === "string" ? clientTexture : firstTexturePath(clientTexture);
+      if (!textureKey) {
+        const instances = def?.components?.["minecraft:material_instances"];
+        if (instances && typeof instances === "object") {
+          for (const descriptor of Object.values(instances)) {
+            if (descriptor && typeof descriptor === "object" && typeof descriptor.texture === "string") {
+              textureKey = descriptor.texture;
+              break;
+            }
+          }
+        }
+      }
+      if (textureKey) {
+        texturePath = resourceIndexes.terrainTextures.get(textureKey) || resourceIndexes.itemTextures.get(textureKey) || null;
+        resolvedBy = texturePath ? "block_definition_and_atlas" : "block_definition";
+      }
+    }
+    if (!textureKey && !texturePath) return null;
+    return {
+      textureKey,
+      texturePath,
+      resolvedBy,
+      confidence: texturePath ? 3 : 1,
+      duplicatedInContribution: false
+    };
+  }
+
+  function discoveryHintsFor(type) {
+    if (type === "item") return { suggestedTriggers: ["obtain", "craft"], source: "generator_default" };
+    if (type === "block") return { suggestedTriggers: ["observe", "interact", "break"], source: "generator_default" };
+    if (type === "entity") return { suggestedTriggers: ["observe", "interact"], source: "generator_default" };
+    return { suggestedTriggers: ["observe"], source: "generator_default" };
+  }
+
+  function normalizeUnlock(raw) {
+    if (raw === undefined || raw === null) return [];
+    const rows = Array.isArray(raw) ? raw : [raw];
+    const result = [];
+    for (const row of rows) {
+      if (typeof row === "string") {
+        result.push({ type: "context", value: row });
+        continue;
+      }
+      if (!row || typeof row !== "object") continue;
+      if (row.item || row.name) result.push({ type: "item", value: cleanId(row.item || row.name), count: row.count || 1 });
+      else if (row.tag) result.push({ type: "tag", value: String(row.tag), count: row.count || 1 });
+      else if (row.context) result.push({ type: "context", value: String(row.context) });
+      else result.push({ type: "unknown", raw: row });
+    }
+    return result;
+  }
+
+  const VANILLA_STATIONS = Object.freeze({
+    crafting_table: { id: "minecraft:crafting_table", key: "tile.crafting_table.name", names: { es_MX: "Mesa de trabajo", en_US: "Crafting Table" } },
+    workbench: { id: "minecraft:crafting_table", key: "tile.crafting_table.name", names: { es_MX: "Mesa de trabajo", en_US: "Crafting Table" } },
+    furnace: { id: "minecraft:furnace", key: "tile.furnace.name", names: { es_MX: "Horno", en_US: "Furnace" } },
+    smoker: { id: "minecraft:smoker", key: "tile.smoker.name", names: { es_MX: "Ahumador", en_US: "Smoker" } },
+    blast_furnace: { id: "minecraft:blast_furnace", key: "tile.blast_furnace.name", names: { es_MX: "Alto horno", en_US: "Blast Furnace" } },
+    stonecutter: { id: "minecraft:stonecutter", key: "tile.stonecutter_block.name", names: { es_MX: "Cortapiedras", en_US: "Stonecutter" } },
+    smithing_table: { id: "minecraft:smithing_table", key: "tile.smithing_table.name", names: { es_MX: "Mesa de herrería", en_US: "Smithing Table" } },
+    brewing_stand: { id: "minecraft:brewing_stand", key: "item.brewing_stand.name", names: { es_MX: "Soporte para pociones", en_US: "Brewing Stand" } },
+    campfire: { id: "minecraft:campfire", key: "tile.campfire.name", names: { es_MX: "Fogata", en_US: "Campfire" } },
+    soul_campfire: { id: "minecraft:soul_campfire", key: "tile.soul_campfire.name", names: { es_MX: "Fogata de almas", en_US: "Soul Campfire" } }
+  });
+
+  function stationTagForRecipe(recipe) {
+    const explicit = (recipe.tags || []).find(tag => typeof tag === "string" && tag && tag !== "nothing");
+    if (explicit) return explicit;
+    if (recipe.type === "furnace") return "furnace";
+    if (recipe.type.startsWith("brewing")) return "brewing_stand";
+    if (recipe.type.startsWith("smithing")) return "smithing_table";
+    return null;
+  }
+
+  function buildStations(recipes, content, sourceId, namespaces, issues, primaryLocale) {
+    const entries = [...content.items, ...content.blocks, ...content.entities];
+    const byId = new Map(entries.map(entry => [entry.id, entry]));
+    const bySuffix = new Map();
+    for (const entry of entries.filter(entry => entry.type === "item" || entry.type === "block")) {
+      const suffix = entry.id.split(":").pop();
+      const rows = bySuffix.get(suffix) || [];
+      rows.push(entry);
+      bySuffix.set(suffix, rows);
+    }
+    const stationMap = new Map();
+    for (const recipe of recipes) {
+      const tag = stationTagForRecipe(recipe);
+      if (!tag) continue;
+      let entry = null;
+      let id = null;
+      let kind = "virtual";
+      let resolvedBy = "unregistered_tag";
+      let confidence = 0;
+      let runtimeLocalizationKey = null;
+      let fallbackName = generatedNameForLocale(tag, primaryLocale);
+      let names = Object.fromEntries(SUPPORTED_EXPORT_LOCALES.map(locale => [locale, generatedNameForLocale(tag, locale)]));
+      let nameSources = Object.fromEntries(SUPPORTED_EXPORT_LOCALES.map(locale => [locale, "generated"]));
+      let localizationKeys = Object.fromEntries(SUPPORTED_EXPORT_LOCALES.map(locale => [locale, null]));
+      const vanilla = VANILLA_STATIONS[tag];
+      if (vanilla) {
+        id = vanilla.id;
+        kind = "block";
+        resolvedBy = "vanilla_tag";
+        confidence = 3;
+        runtimeLocalizationKey = vanilla.key;
+        names = { ...vanilla.names };
+        fallbackName = names[primaryLocale] || names.en_US;
+      } else if (tag.includes(":")) {
+        entry = byId.get(cleanId(tag)) || null;
+        if (entry) resolvedBy = "explicit_identifier";
+      } else {
+        for (const namespace of namespaces) {
+          entry = byId.get(`${namespace}:${tag}`) || null;
+          if (entry) { resolvedBy = "source_namespace"; break; }
+        }
+        if (!entry) {
+          const matches = bySuffix.get(tag) || [];
+          if (matches.length === 1) { entry = matches[0]; resolvedBy = "unique_catalog_suffix"; confidence = 2; }
+          else if (matches.length > 1) resolvedBy = "ambiguous_catalog_suffix";
+        }
+      }
+      if (entry) {
+        id = entry.id;
+        kind = entry.type;
+        confidence = confidence || 3;
+        runtimeLocalizationKey = entry.runtimeLocalizationKey || entry.localizationKey || null;
+        fallbackName = entry.fallbackName;
+        names = { ...entry.names };
+        nameSources = { ...entry.nameSources };
+        localizationKeys = { ...entry.localizationKeys };
+      }
+      const stationId = id || `wati:station/${sourceId}/${String(tag).replace(/[^a-z0-9_.-]+/gi, "_").toLowerCase()}`;
+      const catalogKey = entry?.catalogKey || `wati.station.${sourceId}.${String(tag).replace(/[^a-z0-9_]+/gi, "_").toLowerCase()}`;
+      const key = `${stationId}|${tag}`;
+      let station = stationMap.get(key);
+      if (!station) {
+        station = {
+          id: stationId,
+          tag,
+          kind,
+          sourceId,
+          resolved: Boolean(id),
+          resolvedBy,
+          confidence,
+          runtimeLocalizationKey,
+          catalogTranslationKey: catalogKey,
+          fallbackName,
+          names,
+          nameSources,
+          localizationKeys,
+          contentRef: entry ? { type: entry.type, id: entry.id } : null,
+          recipeTypes: [],
+          recipeIds: []
+        };
+        stationMap.set(key, station);
+        if (!station.resolved && !VANILLA_STATIONS[tag]) {
+          issues.push({
+            severity: "warning",
+            code: "unresolved_station_tag",
+            path: recipe.sourcePath,
+            message: `No se pudo asociar la estación '${tag}' con un bloque u objeto registrado.`
+          });
+        }
+      }
+      if (!station.recipeTypes.includes(recipe.type)) station.recipeTypes.push(recipe.type);
+      station.recipeIds.push(recipe.id);
+      recipe.sourceId = sourceId;
+      recipe.station = {
+        id: station.id,
+        tag: station.tag,
+        kind: station.kind,
+        resolved: station.resolved,
+        resolvedBy: station.resolvedBy,
+        confidence: station.confidence,
+        runtimeLocalizationKey: station.runtimeLocalizationKey,
+        catalogTranslationKey: station.catalogTranslationKey,
+        fallbackName: station.names?.[primaryLocale] || station.fallbackName
+      };
+    }
+    return [...stationMap.values()].sort((a, b) => a.id.localeCompare(b.id));
+  }
+
+  function buildDetectionDescriptor(content, namespaces) {
+    const probes = [];
+    for (const [kind, list] of [["item", content.items], ["block", content.blocks], ["entity", content.entities]]) {
+      for (const entry of list.filter(row => !row.internal).slice(0, 4)) probes.push({ kind, id: entry.id });
+    }
+    return {
+      mode: probes.length ? "content" : namespaces.length ? "namespace" : "manual",
+      namespaces: [...namespaces],
+      probes,
+      hiddenByDefault: false
+    };
   }
 
   const SUPPORTED_EXPORT_LOCALES = ["es_MX", "en_US"];
@@ -231,7 +604,7 @@
         return { name: stripFormatting(langByLocale[locale][key]), key, locale, source: "lang" };
       }
     }
-    return { name: titleCaseId(id), key: translationKey || candidates[0] || null, locale: null, source: "generated" };
+    return { name: generatedNameForLocale(id, locale), key: translationKey || candidates[0] || null, locale: null, source: "generated" };
   }
 
   function cleanPublicName(value) {
@@ -318,7 +691,11 @@
     if (/sword|dagger|bow|gun|weapon/.test(id)) return "equipment";
     if (/pickaxe|axe|shovel|hoe|tool/.test(id)) return "tools";
     if (type === "block") return "construction";
-    return type === "entity" ? "entity" : "items";
+    if (type === "entity") return "entity";
+    if (type === "biome") return "biome";
+    if (type === "structure") return "structure";
+    if (type === "ecosystem") return "ecosystem";
+    return "items";
   }
   function isInternal(id, path, category) { return category === "internal" || /(^|[:_/.])(dummy|internal|collision|seat|helper|controller|marker|proxy)([_/.]|$)/i.test(`${id} ${path}`); }
 
@@ -340,6 +717,12 @@
     return { item: normalized.item || cleanId(value.item || value.name), count: value.count || 1, data: value.data, legacy: normalized.legacy || null };
   }
 
+  function resultRowsForKnowledge(value) {
+    const values = Array.isArray(value) ? value : [value];
+    return values.filter(Boolean).map(row => typeof row === "string" ? { item: cleanId(row), count: 1 } : row).filter(row => row?.item);
+  }
+
+
   function parseRecipeDocument(doc, path) {
     const known = [
       ["minecraft:recipe_shaped", "shaped"], ["minecraft:recipe_shapeless", "shapeless"],
@@ -352,7 +735,16 @@
       const data = doc?.[key];
       if (!data) continue;
       const id = cleanId(data.description?.identifier || basename(path).replace(/\.json$/i, ""));
-      const recipe = { id, type, tags: data.tags || [], sourcePath: path, warnings: [] };
+      const recipe = {
+        id,
+        type,
+        tags: data.tags || [],
+        sourcePath: path,
+        warnings: [],
+        group: data.group || null,
+        priority: Number.isFinite(data.priority) ? data.priority : null,
+        unlock: normalizeUnlock(data.unlock)
+      };
       if (type === "shaped") {
         recipe.pattern = (data.pattern || []).map(row => String(row));
         recipe.key = {};
@@ -361,6 +753,7 @@
         if (recipe.pattern.length > 3 || maxWidth > 3) recipe.warnings.push("pattern_exceeds_3x3");
         if (recipe.pattern.some(row => /\s+$/.test(row))) recipe.warnings.push("trailing_spaces");
         recipe.result = normalizeResult(data.result);
+        if (data.assume_symmetry !== undefined) recipe.assumeSymmetry = data.assume_symmetry === true;
       } else if (type === "shapeless") {
         recipe.ingredients = (data.ingredients || []).map(normalizeIngredient);
         recipe.result = normalizeResult(data.result);
@@ -389,19 +782,316 @@
       for (const [k, v] of Object.entries(value)) walk(v, visitor, path.concat(k));
     }
   }
-  function lootOutputs(doc) {
-    const outputs = [];
+  function numberRange(value, fallback = 1) {
+    if (Number.isFinite(value)) return { min: Number(value), max: Number(value) };
+    if (value && typeof value === "object") {
+      const min = Number.isFinite(value.min) ? Number(value.min) : Number.isFinite(value.max) ? Number(value.max) : fallback;
+      const max = Number.isFinite(value.max) ? Number(value.max) : min;
+      return { min, max };
+    }
+    return { min: fallback, max: fallback };
+  }
+
+  function compactRaw(value, maxLength = 600) {
+    if (value === undefined) return undefined;
+    try {
+      const text = JSON.stringify(value);
+      return text.length > maxLength ? `${text.slice(0, maxLength)}…` : text;
+    } catch {
+      return String(value);
+    }
+  }
+
+  function prune(value) {
+    if (Array.isArray(value)) {
+      const rows = value.map(prune).filter(row => row !== undefined);
+      return rows.length ? rows : undefined;
+    }
+    if (value && typeof value === "object") {
+      const rows = Object.entries(value).map(([key, row]) => [key, prune(row)]).filter(([, row]) => row !== undefined);
+      return rows.length ? Object.fromEntries(rows) : undefined;
+    }
+    if (value === null || value === undefined || value === "") return undefined;
+    return value;
+  }
+
+  function shortEvidencePath(path) {
+    const value = normalizePath(path || "");
+    return value.includes("::") ? value.split("::").pop() : value;
+  }
+
+  function normalizeLootConditions(conditions) {
+    return (Array.isArray(conditions) ? conditions : conditions ? [conditions] : []).map(condition => {
+      if (!condition || typeof condition !== "object") return { type: "unknown", raw: compactRaw(condition) };
+      const type = String(condition.condition || condition.function || "unknown").replace(/^minecraft:/, "");
+      const row = { type };
+      for (const key of ["chance", "looting_multiplier", "entity", "operator", "value", "subject", "on_fire"]) {
+        if (condition[key] !== undefined) row[key] = condition[key];
+      }
+      if (condition.properties !== undefined) row.properties = compactRaw(condition.properties);
+      if (condition.predicate !== undefined) row.predicate = compactRaw(condition.predicate);
+      if (condition.block !== undefined) row.block = condition.block;
+      if (condition.item !== undefined) row.item = condition.item;
+      if (type === "unknown") row.raw = compactRaw(condition);
+      return prune(row) || { type };
+    });
+  }
+
+  function normalizeLootFunctions(functions) {
+    const list = Array.isArray(functions) ? functions : functions ? [functions] : [];
+    const normalized = [];
+    let quantity = { min: 1, max: 1 };
+    for (const fn of list) {
+      if (!fn || typeof fn !== "object") continue;
+      const type = String(fn.function || "unknown").replace(/^minecraft:/, "");
+      const row = { type };
+      if (type === "set_count") {
+        quantity = numberRange(fn.count, 1);
+        row.count = quantity;
+      } else if (type === "looting_enchant" || type === "looting_enchant_bonus") {
+        row.count = numberRange(fn.count, 0);
+      } else if (type === "set_data") row.data = compactRaw(fn.data);
+      else if (type === "set_damage") row.damage = compactRaw(fn.damage);
+      else if (type === "enchant_with_levels") row.levels = compactRaw(fn.levels);
+      else if (type === "enchant_randomly") row.treasure = fn.treasure === true;
+      else if (type === "set_name") row.name = compactRaw(fn.name);
+      else row.raw = compactRaw(fn);
+      normalized.push(row);
+    }
+    return { quantity, functions: normalized };
+  }
+
+  function canonicalLootPath(pathValue) {
+    if (!pathValue || typeof pathValue !== "string") return null;
+    let value = normalizePath(pathValue).replace(/^.*?(loot_tables\/)/i, "$1");
+    if (!value.startsWith("loot_tables/")) value = `loot_tables/${value.replace(/^\/+/, "")}`;
+    if (!value.endsWith(".json")) value += ".json";
+    return value;
+  }
+
+  function classifyLootContext(lootPath) {
+    const key = canonicalLootPath(lootPath) || "loot_tables/unknown.json";
+    const lower = key.toLowerCase();
+    const stem = key.replace(/^loot_tables\//, "").replace(/\.json$/i, "");
+    if (/^loot_tables\/chests\//.test(lower)) return { method: "container_loot", sourceType: "container", source: `loot:${stem}`, context: "chest" };
+    const structureContainer = stem.match(/(?:^|\/)(?:structures?|dungeons?)\/(.+?)\/(?:chest|barrel|dispenser|container)[^/]*$/i);
+    if (structureContainer) return { method: "container_loot", sourceType: "structure", source: `structure_hint:${structureContainer[1].replace(/\//g, ":")}`, context: "structure_container" };
+    if (/(?:^|\/)(?:chest|barrel|container)[^/]*$/i.test(stem)) return { method: "container_loot", sourceType: "container", source: `loot:${stem}`, context: "container" };
+    if (/fishing/.test(lower)) return { method: "fishing", sourceType: "loot_table", source: `loot:${stem}`, context: "fishing" };
+    if (/piglin.*barter|bartering/.test(lower)) return { method: "barter", sourceType: "entity", source: "minecraft:piglin", context: "bartering" };
+    if (/hero_of_the_village/.test(lower)) return { method: "gift", sourceType: "loot_table", source: `loot:${stem}`, context: "hero_of_the_village" };
+    if (/cat_morning_gift/.test(lower)) return { method: "gift", sourceType: "entity", source: "minecraft:cat", context: "cat_morning_gift" };
+    if (/sniffer.*dig/.test(lower)) return { method: "digging", sourceType: "entity", source: "minecraft:sniffer", context: "digging" };
+    if (/^loot_tables\/entities\//.test(lower)) return { method: "entity_drop", sourceType: "loot_table", source: `loot:${stem}`, context: "entity" };
+    if (/^loot_tables\/blocks\//.test(lower)) return { method: "break_block", sourceType: "loot_table", source: `loot:${stem}`, context: "block" };
+    return { method: "random_loot", sourceType: "loot_table", source: `loot:${stem}`, context: "unknown" };
+  }
+
+  function lootEntryChildren(entry) {
+    if (!entry || typeof entry !== "object") return [];
+    if (Array.isArray(entry.children)) return entry.children;
+    if (Array.isArray(entry.entries)) return entry.entries;
+    return [];
+  }
+
+  function extractLootRecords(tableKey, lootTables, issues, options = {}, stack = []) {
+    const canonical = canonicalLootPath(tableKey);
+    const tableRecord = canonical ? lootTables.get(canonical) : null;
+    if (!canonical || !tableRecord) return [];
+    if (stack.includes(canonical)) {
+      issues.push({ severity: "warning", code: "loot_table_cycle", path: tableRecord.path, message: `Referencia circular de loot table: ${[...stack, canonical].join(" -> ")}` });
+      return [];
+    }
+    const table = tableRecord.doc;
+    const rows = [];
+    const nextStack = [...stack, canonical];
+    const pools = Array.isArray(table?.pools) ? table.pools : [];
+    pools.forEach((pool, poolIndex) => {
+      const poolEntries = Array.isArray(pool?.entries) ? pool.entries : [];
+      const totalWeight = poolEntries.reduce((sum, entry) => sum + (Number.isFinite(entry?.weight) ? Number(entry.weight) : 1), 0);
+      const poolConditions = normalizeLootConditions(pool?.conditions);
+      const rolls = numberRange(pool?.rolls, 1);
+      const bonusRolls = pool?.bonus_rolls !== undefined ? numberRange(pool.bonus_rolls, 0) : null;
+      const visit = (entry, entryIndex, branch = []) => {
+        if (!entry || typeof entry !== "object") return;
+        const type = String(entry.type || (entry.name ? "item" : "unknown")).replace(/^minecraft:/, "");
+        const conditions = [...poolConditions, ...normalizeLootConditions(entry.conditions)];
+        const normalizedFunctions = normalizeLootFunctions(entry.functions);
+        const weight = Number.isFinite(entry.weight) ? Number(entry.weight) : 1;
+        const quality = Number.isFinite(entry.quality) ? Number(entry.quality) : 0;
+        if (type === "item" && typeof entry.name === "string") {
+          const item = cleanId(entry.name);
+          if (item && !item.startsWith("minecraft:empty")) {
+            rows.push({
+              item,
+              quantity: normalizedFunctions.quantity,
+              functions: normalizedFunctions.functions,
+              conditions,
+              chance: {
+                model: "relative_weight_per_roll",
+                weight,
+                totalWeight: totalWeight || null,
+                perRoll: totalWeight > 0 ? weight / totalWeight : null,
+                rolls,
+                bonusRolls,
+                quality
+              },
+              lootTable: canonical,
+              path: tableRecord.path,
+              jsonPath: `pools[${poolIndex}].entries[${entryIndex}]${branch.length ? `.branch[${branch.join(".")}]` : ""}`
+            });
+          }
+          return;
+        }
+        if ((type === "loot_table" || type === "table") && typeof entry.name === "string") {
+          const nested = canonicalLootPath(entry.name);
+          if (!lootTables.has(nested)) {
+            issues.push({ severity: "warning", code: "missing_loot_table", path: tableRecord.path, message: `Loot table enlazada no encontrada: ${entry.name}` });
+            return;
+          }
+          if (options.expandNested === false) return;
+          const nestedRows = extractLootRecords(nested, lootTables, issues, options, nextStack);
+          for (const nestedRow of nestedRows) {
+            rows.push({
+              ...nestedRow,
+              conditions: [...conditions, ...(nestedRow.conditions || [])],
+              chance: { ...(nestedRow.chance || {}), parentWeight: weight, parentTotalWeight: totalWeight || null, parentRolls: rolls },
+              nestedFrom: canonical,
+              nestedJsonPath: `pools[${poolIndex}].entries[${entryIndex}]`
+            });
+          }
+          return;
+        }
+        const children = lootEntryChildren(entry);
+        children.forEach((child, childIndex) => visit(child, entryIndex, [...branch, childIndex]));
+      };
+      poolEntries.forEach((entry, entryIndex) => visit(entry, entryIndex));
+    });
+    return rows;
+  }
+
+  function nestedLootReferences(doc) {
+    const refs = [];
     walk(doc, obj => {
-      if (typeof obj.name === "string" && (obj.type === "item" || obj.type === "minecraft:item" || obj.weight !== undefined)) {
-        const id = cleanId(obj.name);
-        if (id && !id.startsWith("minecraft:empty")) outputs.push({ item: id, count: obj.count || null });
+      const type = String(obj?.type || "").replace(/^minecraft:/, "");
+      if ((type === "loot_table" || type === "table") && typeof obj.name === "string") {
+        const path = canonicalLootPath(obj.name);
+        if (path) refs.push(path);
       }
     });
-    return [...new Map(outputs.map(o => [o.item, o])).values()];
+    return unique(refs);
   }
+
+  function normalizeTradeItem(value) {
+    if (!value || typeof value !== "object") return null;
+    const item = cleanId(value.item || value.name);
+    if (!item) return null;
+    return { item, quantity: numberRange(value.quantity ?? value.count, 1), priceMultiplier: value.price_multiplier ?? null, functions: compactRaw(value.functions) };
+  }
+
+  function biomeFilterFacts(value, result = { includeTags: [], excludeTags: [], includeBiomes: [], excludeBiomes: [], raw: [] }) {
+    if (Array.isArray(value)) value.forEach(row => biomeFilterFacts(row, result));
+    else if (value && typeof value === "object") {
+      if (typeof value.test === "string" && value.value !== undefined) {
+        const operator = value.operator || "==";
+        const values = Array.isArray(value.value) ? value.value : [value.value];
+        for (const rawValue of values) {
+          const text = String(rawValue);
+          if (/biome_tag/i.test(value.test)) (operator === "!=" ? result.excludeTags : result.includeTags).push(text);
+          else if (/biome/i.test(value.test)) (operator === "!=" ? result.excludeBiomes : result.includeBiomes).push(cleanId(text));
+        }
+      }
+      for (const key of ["all_of", "any_of", "none_of", "filters", "minecraft:biome_filter"]) if (value[key] !== undefined) biomeFilterFacts(value[key], result);
+    }
+    result.includeTags = unique(result.includeTags);
+    result.excludeTags = unique(result.excludeTags);
+    result.includeBiomes = unique(result.includeBiomes);
+    result.excludeBiomes = unique(result.excludeBiomes);
+    return result;
+  }
+
+  function dimensionHintsFromBiomeFacts(facts) {
+    const tags = [...(facts?.includeTags || []), ...(facts?.includeBiomes || [])].join(" ").toLowerCase();
+    const dimensions = [];
+    if (/nether/.test(tags)) dimensions.push("minecraft:nether");
+    if (/the_end|\bend\b/.test(tags)) dimensions.push("minecraft:the_end");
+    if (/overworld|surface|forest|plains|desert|ocean|mountain|cave|swamp|jungle|savanna|taiga|badlands/.test(tags)) dimensions.push("minecraft:overworld");
+    return unique(dimensions);
+  }
+
+  function featurePlacedBlocks(doc) {
+    const blocks = [];
+    walk(doc, obj => {
+      for (const key of ["places_block"]) {
+        const value = obj?.[key];
+        const values = Array.isArray(value) ? value : value !== undefined ? [value] : [];
+        for (const row of values) {
+          if (typeof row === "string" && row.includes(":")) blocks.push(cleanId(row));
+          else if (row && typeof row === "object") {
+            const id = cleanId(row.name || row.block || row.item);
+            if (id) blocks.push(id);
+          }
+        }
+      }
+    });
+    return unique(blocks);
+  }
+  function featureReplaceBlocks(doc) {
+    const blocks = [];
+    walk(doc, obj => {
+      for (const key of ["may_replace", "may_place_on"]) {
+        const value = obj?.[key];
+        const values = Array.isArray(value) ? value : value !== undefined ? [value] : [];
+        for (const row of values) {
+          if (typeof row === "string" && row.includes(":")) blocks.push(cleanId(row));
+          else if (row && typeof row === "object") {
+            const id = cleanId(row.name || row.block || row.item);
+            if (id) blocks.push(id);
+          }
+        }
+      }
+    });
+    return unique(blocks);
+  }
+
+
+  function featureReferences(doc) {
+    const refs = [];
+    walk(doc, obj => {
+      for (const key of ["places_feature", "feature_to_snap", "feature_to_place"]) {
+        if (typeof obj?.[key] === "string" && obj[key].includes(":")) refs.push(cleanId(obj[key]));
+      }
+      for (const key of ["features", "conditional_features", "weighted_features"]) {
+        const value = obj?.[key];
+        if (!Array.isArray(value)) continue;
+        for (const row of value) {
+          if (typeof row === "string") refs.push(cleanId(row));
+          else if (row && typeof row === "object") {
+            const id = cleanId(row.feature || row.places_feature || row.name);
+            if (id) refs.push(id);
+          }
+        }
+      }
+    });
+    return unique(refs.filter(Boolean));
+  }
+
+  function resolveFeatureBlocks(featureId, featureDefs, stack = []) {
+    const id = cleanId(featureId);
+    if (!id || stack.includes(id)) return [];
+    const record = featureDefs.get(id);
+    if (!record) return [];
+    const blocks = [...featurePlacedBlocks(record.doc)];
+    for (const ref of featureReferences(record.doc)) blocks.push(...resolveFeatureBlocks(ref, featureDefs, [...stack, id]));
+    return unique(blocks);
+  }
+
 
   function analyzeEntries(entries, metadata = {}) {
     const issues = [];
+    const runtimeProviderFiles = entries.filter(file => /(?:^|\/)(?:wati_provider\.(?:js|ts)|WATI_PROVIDER_PROTOCOL_V1\.md)$/i.test(file.path || ""));
+    const runtimeProviderDetected = runtimeProviderFiles.length > 0;
+    if (runtimeProviderDetected) issues.push({ severity: "info", code: "runtime_provider_detected", path: runtimeProviderFiles[0].virtualPath || runtimeProviderFiles[0].path, message: "WATI Runtime Provider detected. Treat the provider as authoritative for its namespace instead of publishing a duplicate static contribution." });
     const parsed = [];
     const manifests = [];
     const langByLocale = {};
@@ -421,6 +1111,16 @@
         }
       }
     }
+
+    const resourceIndexes = buildResourceIndexes(parsed);
+    const scriptFiles = entries.filter(file => /\.(?:js|ts)$/i.test(normalizePath(file.virtualPath || file.path)));
+    if (scriptFiles.length) issues.push({
+      severity: "info",
+      code: "script_logic_not_interpreted",
+      path: scriptFiles[0].virtualPath || scriptFiles[0].path,
+      count: scriptFiles.length,
+      message: `${scriptFiles.length} archivo(s) de script detectados. La lógica de recompensas, interacciones o generación implementada exclusivamente por JavaScript requiere revisión manual.`
+    });
 
     const requestedExportLocales = unique((metadata.exportLocales?.length ? metadata.exportLocales : SUPPORTED_EXPORT_LOCALES)
       .filter(locale => SUPPORTED_EXPORT_LOCALES.includes(locale)));
@@ -446,6 +1146,7 @@
 
     const behaviorPacks = packInfo.filter(p => p.kind === "behavior");
     const resourcePacks = packInfo.filter(p => p.kind === "resource");
+    if (behaviorPacks.length > 1) issues.push({ severity: "warning", code: "multiple_behavior_packs", path: behaviorPacks.map(pack => pack.path).join(", "), message: "Se detectaron varios Behavior Packs. El Builder está pensado para exportar una fuente o proyecto por contribución; analiza por separado los addons independientes para evitar identifiers duplicados o atribuciones mezcladas." });
     if (behaviorPacks.length && !resourcePacks.length) issues.push({ severity: "warning", code: "resource_pack_missing", path: behaviorPacks[0].path, message: "Solo se detectó el Behavior Pack. Los nombres pueden ser generados desde identifiers; añade el Resource Pack para recuperar traducciones y recursos asociados." });
     if (!behaviorPacks.length && resourcePacks.length) issues.push({ severity: "warning", code: "behavior_pack_missing", path: resourcePacks[0].path, message: "Solo se detectó el Resource Pack. No será posible extraer recetas ni definiciones del Behavior Pack." });
 
@@ -456,10 +1157,15 @@
       }
     }
 
-    const content = { items: [], blocks: [], entities: [] };
+    const content = { items: [], blocks: [], entities: [], biomes: [], structures: [], ecosystems: [] };
     const recipes = [];
-    const definitions = { block: new Map(), entity: new Map() };
+    const definitions = { block: new Map(), entity: new Map(), biome: new Map(), structure: new Map() };
     const lootTables = new Map();
+    const tradeTables = [];
+    const spawnRules = [];
+    const featureDefs = new Map();
+    const featureRules = [];
+    const structureSets = [];
     const seen = new Map();
     let localizedNames = 0;
     let generatedNames = 0;
@@ -471,6 +1177,8 @@
       if ((def = doc["minecraft:item"])) { type = "item"; id = def.description?.identifier; }
       else if ((def = doc["minecraft:block"])) { type = "block"; id = def.description?.identifier; }
       else if ((def = doc["minecraft:entity"])) { type = "entity"; id = def.description?.identifier; }
+      else if ((def = doc["minecraft:biome"])) { type = "biome"; id = def.description?.identifier; }
+      else if ((def = doc["minecraft:jigsaw"])) { type = "structure"; id = def.description?.identifier; }
       if (type && id) {
         id = cleanId(id);
         const category = detectCategory(type, def, id, path);
@@ -491,10 +1199,47 @@
         const resolvedKey = localizationKeys[primaryLocale] || translationKey;
         const resolvedLocale = nameSource === "lang" ? primaryLocale : null;
         const entry = {
-          id, type, fallbackName, names, nameSources, localizationKeys,
-          localizationKey: resolvedKey, localizationLocale: resolvedLocale,
-          nameSource, category, internal: isInternal(id, path, category), sourcePath: path
+          id,
+          type,
+          namespace: namespaceOf(id),
+          fallbackName,
+          names,
+          nameSources,
+          localizationKeys,
+          localizationKey: resolvedKey,
+          runtimeLocalizationKey: resolvedKey,
+          catalogKey: catalogTranslationKey(type, id),
+          localizationLocale: resolvedLocale,
+          localization: {
+            runtimeKey: resolvedKey,
+            catalogKey: catalogTranslationKey(type, id),
+            fallbackName,
+            names,
+            nameSources,
+            localizationKeys
+          },
+          nameSource,
+          category,
+          internal: isInternal(id, path, category),
+          sourcePath: path,
+          icon: extractEntryIcon(type, id, def, resourceIndexes),
+          discoveryHints: discoveryHintsFor(type)
         };
+        if (type === "biome") {
+          entry.biomeTags = unique(Object.keys(def.components || {}).filter(key => key.startsWith("minecraft:")).map(key => key.replace(/^minecraft:/, "")));
+        } else if (type === "structure") {
+          const biomeFacts = biomeFilterFacts(def.biome_filters || def.biome_filter || []);
+          entry.worldgen = {
+            step: def.step || null,
+            startPool: def.start_pool || null,
+            maxDepth: Number.isFinite(def.max_depth) ? def.max_depth : null,
+            startHeight: compactRaw(def.start_height),
+            heightmapProjection: def.heightmap_projection || null,
+            terrainAdaptation: def.terrain_adaptation || null,
+            biomeFilters: biomeFacts,
+            dimensions: dimensionHintsFromBiomeFacts(biomeFacts)
+          };
+        }
         const key = `${type}:${id}`;
         const signature = stableStringify(def);
         if (!seen.has(key)) {
@@ -515,11 +1260,23 @@
             message: `${type} duplicado ${equivalent ? "con definición equivalente" : "con definición diferente"}: ${id}. Primera definición: ${previous.path}`
           });
         }
-        if (type === "block" || type === "entity") definitions[type].set(id, { def, path });
+        if (definitions[type]) definitions[type].set(id, { def, path });
       }
       const recipe = parseRecipeDocument(doc, path);
       if (recipe) recipes.push(recipe);
-      if (/loot_tables\//i.test(path)) lootTables.set(path.split("::").pop().replace(/^.*?(loot_tables\/)/i, "$1"), doc);
+      if (/loot_tables\//i.test(path)) {
+        const key = canonicalLootPath(path);
+        if (key) lootTables.set(key, { doc, path });
+      }
+      if (/(?:^|\/)(?:trading|trades)\//i.test(path) && Array.isArray(doc?.tiers)) tradeTables.push({ doc, path });
+      if (doc?.["minecraft:spawn_rules"]) spawnRules.push({ def: doc["minecraft:spawn_rules"], path });
+      if (doc?.["minecraft:feature_rules"]) featureRules.push({ def: doc["minecraft:feature_rules"], path });
+      if (doc?.["minecraft:structure_set"]) structureSets.push({ def: doc["minecraft:structure_set"], path });
+      for (const [rootKey, rootDef] of Object.entries(doc || {})) {
+        if (!/^minecraft:.*_feature$/.test(rootKey) || rootKey === "minecraft:feature_rules") continue;
+        const featureId = cleanId(rootDef?.description?.identifier);
+        if (featureId) featureDefs.set(featureId, { doc, def: rootDef, type: rootKey.replace(/^minecraft:/, ""), path });
+      }
     }
 
     for (const locale of SUPPORTED_EXPORT_LOCALES) {
@@ -531,24 +1288,258 @@
     }
 
     const acquisition = [];
-    function resolveLoot(pathValue) {
-      if (!pathValue || typeof pathValue !== "string") return null;
-      let p = normalizePath(pathValue).replace(/^\/?/, "");
-      if (!p.endsWith(".json")) p += ".json";
-      return lootTables.get(p) || [...lootTables.entries()].find(([k]) => k.endsWith(p))?.[1] || null;
+    const acquisitionKeys = new Set();
+    const referencedLootTables = new Set();
+    const habitats = [];
+    const worldGeneration = [];
+    const structureKnowledge = [];
+    const lootProfiles = [];
+
+    function methodId(method) {
+      const raw = `${method.method}|${method.target}|${method.sourceType}|${method.source}|${method.evidence?.path || ""}|${method.evidence?.jsonPath || ""}`;
+      return `acq_${crc32(textEncoder.encode(raw)).toString(16).padStart(8, "0")}`;
     }
+    function pushAcquisition(method) {
+      if (!method?.target || !method?.method || !method?.source) return;
+      const row = prune({ ...method }) || {};
+      row.id ||= methodId(row);
+      const key = stableStringify([row.target, row.method, row.sourceType, row.source, row.details, row.evidence]);
+      if (acquisitionKeys.has(key)) return;
+      acquisitionKeys.add(key);
+      acquisition.push(row);
+    }
+    function lootRefsFromDefinition(definition) {
+      const refs = [];
+      walk(definition, (obj, jsonPath) => {
+        const component = obj?.["minecraft:loot"];
+        const raw = typeof component === "string" ? component : component?.table;
+        if (typeof raw === "string") refs.push({ lootTable: canonicalLootPath(raw), jsonPath: jsonPath.join(".") || "components.minecraft:loot" });
+      });
+      return [...new Map(refs.filter(row => row.lootTable).map(row => [`${row.lootTable}|${row.jsonPath}`, row])).values()];
+    }
+    function addLootMethods(lootTable, context, certainty = "confirmed", reference = {}, expandNested = true) {
+      if (!lootTable || !lootTables.has(lootTable)) {
+        if (lootTable) issues.push({ severity: "warning", code: "missing_loot_table", path: reference.path || lootTable, message: `Loot table no encontrada: ${lootTable}` });
+        return;
+      }
+      referencedLootTables.add(lootTable);
+      const records = extractLootRecords(lootTable, lootTables, issues, { expandNested });
+      for (const record of records) {
+        referencedLootTables.add(record.lootTable);
+        if (record.nestedFrom) referencedLootTables.add(record.nestedFrom);
+        pushAcquisition({
+          target: record.item,
+          method: context.method,
+          sourceType: context.sourceType,
+          source: context.source,
+          certainty,
+          availability: (record.conditions?.length || record.chance?.perRoll < 1) ? "random_or_conditional" : "direct",
+          quantity: record.quantity,
+          chance: record.chance,
+          conditions: record.conditions,
+          details: {
+            lootTable: record.lootTable,
+            context: context.context || null,
+            contextName: context.contextName || null,
+            functions: record.functions,
+            nestedFrom: record.nestedFrom || null,
+            definitionPath: reference.definitionPath || null,
+            definitionJsonPath: reference.jsonPath || null
+          },
+          evidence: { path: shortEvidencePath(record.path), jsonPath: record.jsonPath }
+        });
+      }
+    }
+
     for (const [id, { def, path }] of definitions.block) {
-      const lootPath = def.components?.["minecraft:loot"];
-      const table = resolveLoot(lootPath);
-      if (lootPath && !table) issues.push({ severity: "warning", code: "missing_loot_table", path, message: `Loot table no encontrada: ${lootPath}` });
-      for (const output of lootOutputs(table)) acquisition.push({ target: output.item, method: "break_block", sourceType: "block", source: id, certainty: "confirmed", details: { lootTable: lootPath, count: output.count } });
+      for (const ref of lootRefsFromDefinition(def)) addLootMethods(ref.lootTable, { method: "break_block", sourceType: "block", source: id, context: "block_drop" }, "confirmed", { path, definitionPath: path, jsonPath: ref.jsonPath });
     }
     for (const [id, { def, path }] of definitions.entity) {
-      const lootPath = def.components?.["minecraft:loot"]?.table || def.components?.["minecraft:loot"];
-      const table = resolveLoot(lootPath);
-      if (lootPath && !table) issues.push({ severity: "warning", code: "missing_loot_table", path, message: `Loot table no encontrada: ${lootPath}` });
-      for (const output of lootOutputs(table)) acquisition.push({ target: output.item, method: "entity_drop", sourceType: "entity", source: id, certainty: "confirmed", details: { lootTable: lootPath, count: output.count } });
+      for (const ref of lootRefsFromDefinition(def)) addLootMethods(ref.lootTable, { method: "entity_drop", sourceType: "entity", source: id, context: "entity_drop" }, "confirmed", { path, definitionPath: path, jsonPath: ref.jsonPath });
     }
+
+    for (const [lootPath, record] of lootTables) {
+      if (referencedLootTables.has(lootPath)) continue;
+      const context = classifyLootContext(lootPath);
+      if (["unknown", "entity", "block"].includes(context.context)) continue;
+      context.contextName = titleCaseId(lootPath.replace(/^loot_tables\//, "").replace(/\.json$/i, ""));
+      const certainty = context.sourceType === "loot_table" ? "probable" : "confirmed";
+      addLootMethods(lootPath, context, certainty, { path: record.path }, false);
+    }
+
+    const contextualLootKinds = new Set(["chest", "structure_container", "container", "fishing", "bartering", "hero_of_the_village", "cat_morning_gift", "digging"]);
+    for (const [lootPath, record] of lootTables) {
+      const context = classifyLootContext(lootPath);
+      const directRecords = extractLootRecords(lootPath, lootTables, issues, { expandNested: false });
+      const direct = directRecords.map(row => prune({
+        item: row.item,
+        quantity: row.quantity,
+        chance: row.chance,
+        conditions: row.conditions,
+        functions: row.functions,
+        jsonPath: row.jsonPath
+      }));
+      const resolvedItems = contextualLootKinds.has(context.context)
+        ? unique(extractLootRecords(lootPath, lootTables, issues, { expandNested: true }).map(row => row.item))
+        : unique(directRecords.map(row => row.item));
+      lootProfiles.push(prune({
+        id: lootPath,
+        context: context.context,
+        sourceType: context.sourceType,
+        source: context.source,
+        directOutputs: direct,
+        references: nestedLootReferences(record.doc),
+        resolvedItems,
+        evidence: { path: shortEvidencePath(record.path) }
+      }));
+    }
+
+    for (const recipe of recipes) {
+      const outputs = resultRowsForKnowledge(recipe.result ?? recipe.output);
+      const method = recipe.type === "furnace" ? "smelt" : recipe.type.startsWith("brewing") ? "brew" : recipe.type.startsWith("smithing") ? "smith" : "craft";
+      for (const output of outputs) {
+        pushAcquisition({
+          target: output.item,
+          method,
+          sourceType: "recipe",
+          source: recipe.id,
+          certainty: "confirmed",
+          availability: "direct",
+          quantity: numberRange(output.count, 1),
+          conditions: [],
+          details: { recipeType: recipe.type, station: recipe.station?.id || null, tags: recipe.tags || [], unlock: recipe.unlock || [] },
+          evidence: { path: shortEvidencePath(recipe.sourcePath), jsonPath: "recipe.result" }
+        });
+      }
+    }
+
+    for (const { doc, path } of tradeTables) {
+      (doc.tiers || []).forEach((tier, tierIndex) => {
+        (tier.trades || []).forEach((trade, tradeIndex) => {
+          const costs = (trade.wants || []).map(normalizeTradeItem).filter(Boolean);
+          const outputs = (trade.gives || []).map(normalizeTradeItem).filter(Boolean);
+          for (const output of outputs) {
+            pushAcquisition({
+              target: output.item,
+              method: "trade",
+              sourceType: "trade_table",
+              source: `trade:${normalizePath(path).split("/").pop().replace(/\.json$/i, "")}`,
+              certainty: "confirmed",
+              availability: "conditional",
+              quantity: output.quantity,
+              conditions: [],
+              details: { tier: tierIndex + 1, tradeIndex: tradeIndex + 1, costs, rewardExperience: trade.reward_exp ?? null, maxUses: trade.max_uses ?? null, traderExperience: trade.trader_exp ?? null },
+              evidence: { path: shortEvidencePath(path), jsonPath: `tiers[${tierIndex}].trades[${tradeIndex}].gives` }
+            });
+          }
+        });
+      });
+    }
+
+    for (const { def, path } of spawnRules) {
+      const entityId = cleanId(def.description?.identifier);
+      if (!entityId) continue;
+      (def.conditions || []).forEach((condition, conditionIndex) => {
+        const facts = biomeFilterFacts(condition?.["minecraft:biome_filter"] || []);
+        const blocks = unique([
+          ...(Array.isArray(condition?.["minecraft:spawns_on_block_filter"]) ? condition["minecraft:spawns_on_block_filter"] : []),
+          ...(condition?.["minecraft:spawns_above_block_filter"]?.blocks || [])
+        ].map(cleanId).filter(Boolean));
+        habitats.push({
+          entity: entityId,
+          populationControl: def.description?.population_control || null,
+          biomeTags: facts.includeTags,
+          excludedBiomeTags: facts.excludeTags,
+          biomes: facts.includeBiomes,
+          excludedBiomes: facts.excludeBiomes,
+          dimensions: dimensionHintsFromBiomeFacts(facts),
+          blocks,
+          surface: condition?.["minecraft:spawns_on_surface"] !== undefined,
+          underground: condition?.["minecraft:spawns_underground"] !== undefined,
+          underwater: condition?.["minecraft:spawns_underwater"] !== undefined,
+          brightness: compactRaw(condition?.["minecraft:brightness_filter"]),
+          height: compactRaw(condition?.["minecraft:height_filter"]),
+          weight: compactRaw(condition?.["minecraft:weight"]),
+          herd: compactRaw(condition?.["minecraft:herd"]),
+          certainty: "confirmed",
+          evidence: { path: shortEvidencePath(path), jsonPath: `minecraft:spawn_rules.conditions[${conditionIndex}]` }
+        });
+      });
+    }
+
+    for (const { def, path } of featureRules) {
+      const ruleId = cleanId(def.description?.identifier);
+      const featureId = cleanId(def.description?.places_feature);
+      const facts = biomeFilterFacts(def.conditions?.["minecraft:biome_filter"] || []);
+      const blocks = resolveFeatureBlocks(featureId, featureDefs);
+      worldGeneration.push({
+        id: ruleId,
+        feature: featureId,
+        blocks,
+        replaceBlocks: featureId && featureDefs.get(featureId) ? featureReplaceBlocks(featureDefs.get(featureId).doc) : [],
+        biomeTags: facts.includeTags,
+        excludedBiomeTags: facts.excludeTags,
+        biomes: facts.includeBiomes,
+        excludedBiomes: facts.excludeBiomes,
+        dimensions: dimensionHintsFromBiomeFacts(facts),
+        placementPass: def.conditions?.placement_pass || null,
+        distribution: compactRaw(def.distribution),
+        certainty: blocks.length ? "confirmed" : "probable",
+        evidence: { path: shortEvidencePath(path), jsonPath: "minecraft:feature_rules" }
+      });
+    }
+
+    const structureById = new Map(content.structures.map(entry => [entry.id, entry]));
+    for (const { def, path } of structureSets) {
+      const setId = cleanId(def.description?.identifier);
+      for (const [index, row] of (def.structures || []).entries()) {
+        const structureId = cleanId(row.structure);
+        const placement = { setId, weight: row.weight ?? 1, placement: compactRaw(def.placement), evidence: { path: shortEvidencePath(path), jsonPath: `minecraft:structure_set.structures[${index}]` } };
+        const entry = structureById.get(structureId);
+        if (entry) {
+          entry.worldgen ||= {};
+          entry.worldgen.placements ||= [];
+          entry.worldgen.placements.push(placement);
+        }
+      }
+    }
+    for (const entry of content.structures) {
+      structureKnowledge.push({
+        id: entry.id,
+        biomeFilters: entry.worldgen?.biomeFilters || null,
+        dimensions: entry.worldgen?.dimensions || [],
+        step: entry.worldgen?.step || null,
+        startPool: entry.worldgen?.startPool || null,
+        maxDepth: entry.worldgen?.maxDepth ?? null,
+        placements: entry.worldgen?.placements || [],
+        evidence: { path: shortEvidencePath(entry.sourcePath) }
+      });
+    }
+
+    const acquisitionByTarget = {};
+    for (const method of acquisition) (acquisitionByTarget[method.target] ||= []).push(method.id);
+    const knowledge = {
+      schemaVersion: KNOWLEDGE_SCHEMA_VERSION,
+      format: "wati.catalog.knowledge",
+      sourceId: null,
+      coverage: {
+        acquisition: ["recipes", "block_loot", "entity_loot", "container_loot", "nested_loot", "fishing", "bartering", "trades"],
+        world: ["spawn_rules", "feature_rules", "jigsaw_structures"],
+        limitations: ["script_logic_not_interpreted", "mcstructure_contents_not_decoded", "exact_loot_probability_not_guaranteed"]
+      },
+      entryProfiles: Object.fromEntries(Object.entries(acquisitionByTarget).map(([id, acquisitionMethodIds]) => [id, { acquisitionMethodIds }])),
+      lootProfiles,
+      habitats,
+      worldGeneration,
+      structures: structureKnowledge,
+      notes: [
+        "Probabilities based on weights are relative per roll and may change through conditions, functions or nested tables.",
+        "Generated structures and features indicate possible world placement, not a guaranteed nearby location.",
+        "JavaScript-controlled rewards and mechanics require manual review or SDK metadata.",
+        "Consumers can invert lootProfiles.resolvedItems to build item-to-container indexes without duplicating them in this contribution."
+      ]
+    };
+
 
     const recipeIds = new Map();
     for (const recipe of recipes) {
@@ -590,8 +1581,39 @@
       officialUrl: metadata.officialUrl || inferredUrl,
       primaryLocale,
       exportedLocales: exportLocales,
-      generatedBy: `WATI Catalog Builder ${VERSION}`
+      generatedBy: `WATI Catalog Builder ${VERSION}`,
+      generatedWith: {
+        builderVersion: VERSION,
+        releaseChannel: RELEASE_CHANNEL,
+        catalogSchemaVersion: SCHEMA_VERSION,
+        recipeSchemaVersion: RECIPE_SCHEMA_VERSION,
+        acquisitionSchemaVersion: ACQUISITION_SCHEMA_VERSION,
+        knowledgeSchemaVersion: KNOWLEDGE_SCHEMA_VERSION
+      },
+      capabilities: {
+        contentKinds: Object.entries(content).filter(([, list]) => list.length).map(([kind]) => ({ items: "item", blocks: "block", entities: "entity", biomes: "biome", structures: "structure", ecosystems: "ecosystem" })[kind]),
+        recipes: recipes.length > 0,
+        acquisition: acquisition.length > 0,
+        richLoot: lootTables.size > 0,
+        trades: tradeTables.length > 0,
+        habitats: habitats.length > 0,
+        worldGeneration: worldGeneration.length > 0,
+        structures: content.structures.length > 0,
+        localization: exportLocales.length > 0,
+        stations: recipes.length > 0,
+        icons: content.items.some(entry => entry.icon) || content.blocks.some(entry => entry.icon),
+        discoveryHints: true,
+        futureKnowledge: true,
+        runtimeProviderDetected
+      },
+      detection: buildDetectionDescriptor(content, namespaceList)
     };
+
+    for (const list of Object.values(content)) {
+      for (const entry of list) entry.sourceId = sourceId;
+    }
+    knowledge.sourceId = sourceId;
+    const stations = buildStations(recipes, content, sourceId, namespaceList, issues, primaryLocale);
 
     if (source.author === "Unknown") issues.push({ severity: "warning", code: "author_not_verified", path: behavior?.path || "manifest.json", message: "No se pudo determinar el autor. Verifica el campo antes de exportar." });
     if (source.license === "Unknown / Not verified") issues.push({ severity: "warning", code: "license_not_verified", path: licenseDetection.path || "LICENSE", message: "La licencia no fue detectada. Verifícala en la página oficial o en los archivos del proyecto." });
@@ -599,11 +1621,15 @@
 
     const report = {
       schemaVersion: SCHEMA_VERSION,
+      format: "wati.catalog.report",
       generatorVersion: VERSION,
       summary: {
         packs: packInfo.length, behaviorPacks: behaviorPacks.length, resourcePacks: resourcePacks.length,
         files: entries.length, items: content.items.length, blocks: content.blocks.length, entities: content.entities.length,
-        recipes: recipes.length, acquisition: acquisition.length, localizedNames, generatedNames, manualNames: 0, namesByLocale,
+        biomes: content.biomes.length, structures: content.structures.length, ecosystems: content.ecosystems.length,
+        recipes: recipes.length, stations: stations.length, acquisition: acquisition.length,
+        lootTables: lootTables.size, tradeTables: tradeTables.length, habitats: habitats.length, worldGeneration: worldGeneration.length, scriptFiles: scriptFiles.length,
+        localizedNames, generatedNames, manualNames: 0, namesByLocale,
         errors: issues.filter(i => i.severity === "error").length,
         warnings: issues.filter(i => i.severity === "warning").length,
         info: issues.filter(i => i.severity === "info").length
@@ -621,12 +1647,22 @@
     };
 
     return {
-      source: { schemaVersion: SCHEMA_VERSION, generator: "WATI Catalog Builder", generatorVersion: VERSION, source },
-      content: { schemaVersion: SCHEMA_VERSION, sourceId, primaryLocale, exportedLocales: exportLocales, ...content },
-      recipes: { schemaVersion: SCHEMA_VERSION, sourceId, recipes },
-      acquisition: { schemaVersion: SCHEMA_VERSION, sourceId, coverage: "experimental:block_and_entity_loot", methods: acquisition },
+      source: { schemaVersion: SCHEMA_VERSION, format: "wati.catalog.source", generator: "WATI Catalog Builder", generatorVersion: VERSION, releaseChannel: RELEASE_CHANNEL, source },
+      content: { schemaVersion: SCHEMA_VERSION, format: "wati.catalog.content", sourceId, primaryLocale, exportedLocales: exportLocales, entryKinds: ["item", "block", "entity", "biome", "structure", "ecosystem"], ...content },
+      recipes: { schemaVersion: RECIPE_SCHEMA_VERSION, format: "wati.catalog.recipes", sourceId, recipes },
+      stations: { schemaVersion: SCHEMA_VERSION, format: "wati.catalog.stations", sourceId, primaryLocale, exportedLocales: exportLocales, stations },
+      acquisition: {
+        schemaVersion: ACQUISITION_SCHEMA_VERSION,
+        format: "wati.catalog.acquisition",
+        sourceId,
+        coverage: "extended:recipes_loot_tables_trades_and_random_sources",
+        probabilityNotice: "Weights are relative per roll. Conditions, nested tables, functions and bonus rolls can change the final probability.",
+        methods: acquisition
+      },
+      knowledge,
       localization: {
         schemaVersion: SCHEMA_VERSION,
+        format: "wati.catalog.localization",
         sourceId,
         primaryLocale,
         includedLocales: exportLocales,
@@ -686,7 +1722,24 @@
     return concatArrays([...locals, centralBytes, eocd]);
   }
 
-  const CONTRIBUTION_README = `# WATI Catalog Contribution\n\nThis archive was generated locally with WATI Catalog Builder.\n\nFiles:\n- source.json: project identity, provenance and selected locales\n- content.json: normalized items, blocks and entities with per-locale names\n- recipes.json: normalized recipes\n- acquisition.json: confirmed or inferred acquisition methods\n- localization.json: only the name keys used for the selected export locales\n- report.json: warnings, errors and evidence used by the generator\n\nNames may be exported in es_MX, en_US or both. Generated names are marked in content.json and must not be mistaken for official translations. Names corrected in the Builder are marked with nameSource "manual".\n\nReview every warning before submitting this archive. Do not attach third-party add-on files to a public contribution unless you are authorized to distribute them.\n`;
+  const CONTRIBUTION_README = `# WATI Catalog Contribution — Schema 3
+
+This archive was generated locally with WATI Catalog Builder v${VERSION}.
+
+Files:
+- source.json: project identity, provenance, detection hints and capabilities
+- content.json: normalized entries with localization, icon references and discovery hints
+- recipes.json: normalized recipes, unlock conditions and station references
+- stations.json: resolved or unresolved crafting-station descriptors
+- acquisition.json: confirmed or inferred acquisition methods with quantities, conditions and relative loot weights
+- knowledge.json: future Codex knowledge for habitats, world generation, structures and entry relations
+- localization.json: only the name keys used for the selected export locales
+- report.json: warnings, errors and evidence used by the generator
+
+Schema 3 keeps the familiar fields from earlier contributions while adding enriched descriptors for WATI Core 3. Generated and manually corrected names remain explicitly marked. Texture paths are references to resources already present in the analyzed Resource Pack; no third-party texture is copied into this contribution.
+
+Review every warning before submitting this archive. Do not attach third-party add-on files to a public contribution unless you are authorized to distribute them.
+`;
 
   function contentForExport(content) {
     const locales = content.exportedLocales?.length ? content.exportedLocales : [content.primaryLocale || "es_MX"];
@@ -700,6 +1753,16 @@
       copy.nameSource = copy.nameSources[primaryLocale];
       copy.localizationKey = copy.localizationKeys[primaryLocale];
       copy.localizationLocale = copy.nameSource === "lang" ? primaryLocale : null;
+      copy.runtimeLocalizationKey = copy.localizationKey;
+      copy.localization = {
+        ...(copy.localization || {}),
+        runtimeKey: copy.runtimeLocalizationKey,
+        catalogKey: copy.catalogKey,
+        fallbackName: copy.fallbackName,
+        names: copy.names,
+        nameSources: copy.nameSources,
+        localizationKeys: copy.localizationKeys
+      };
       return copy;
     };
     return {
@@ -708,7 +1771,27 @@
       exportedLocales: locales,
       items: content.items.map(filterEntry),
       blocks: content.blocks.map(filterEntry),
-      entities: content.entities.map(filterEntry)
+      entities: content.entities.map(filterEntry),
+      biomes: content.biomes || [],
+      structures: content.structures || [],
+      ecosystems: content.ecosystems || []
+    };
+  }
+
+  function stationsForExport(stationDocument) {
+    const locales = stationDocument.exportedLocales?.length ? stationDocument.exportedLocales : [stationDocument.primaryLocale || "es_MX"];
+    const primaryLocale = locales.includes(stationDocument.primaryLocale) ? stationDocument.primaryLocale : locales[0];
+    return {
+      ...stationDocument,
+      primaryLocale,
+      exportedLocales: locales,
+      stations: (stationDocument.stations || []).map(station => ({
+        ...station,
+        names: Object.fromEntries(locales.map(locale => [locale, station.names?.[locale] || station.fallbackName])),
+        nameSources: Object.fromEntries(locales.map(locale => [locale, station.nameSources?.[locale] || "generated"])),
+        localizationKeys: Object.fromEntries(locales.map(locale => [locale, station.localizationKeys?.[locale] || null])),
+        fallbackName: station.names?.[primaryLocale] || station.fallbackName
+      }))
     };
   }
 
@@ -719,7 +1802,9 @@
       { name: "source.json", data: pretty(analysis.source) },
       { name: "content.json", data: pretty(contentForExport(analysis.content)) },
       { name: "recipes.json", data: pretty(analysis.recipes) },
+      { name: "stations.json", data: pretty(stationsForExport(analysis.stations)) },
       { name: "acquisition.json", data: pretty(analysis.acquisition) },
+      { name: "knowledge.json", data: pretty(analysis.knowledge) },
       { name: "localization.json", data: pretty(analysis.localization) },
       { name: "report.json", data: pretty(analysis.report) }
     ];
@@ -727,7 +1812,7 @@
   }
 
   return {
-    VERSION, SCHEMA_VERSION, SUPPORTED_EXPORT_LOCALES, readZip, flattenArchives, analyzeEntries, exportContribution, writeZip,
+    VERSION, RELEASE_CHANNEL, SCHEMA_VERSION, RECIPE_SCHEMA_VERSION, ACQUISITION_SCHEMA_VERSION, KNOWLEDGE_SCHEMA_VERSION, SUPPORTED_EXPORT_LOCALES, readZip, flattenArchives, analyzeEntries, exportContribution, writeZip,
     normalizeLegacyDescriptor, cleanPublicName, slugifySourceId, inferVersionCandidate, stripFormatting
   };
 });

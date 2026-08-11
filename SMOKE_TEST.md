@@ -1,12 +1,26 @@
-# Quick test — WATI Catalog Builder v1.0.0
+# Prueba rápida — WATI Catalog Builder v1.2.1
 
-1. Open `index.html` in a supported browser.
-2. Load a Behavior Pack and its matching Resource Pack.
-3. Confirm the detected project identity and pack versions.
-4. Switch the interface between ES-MX and EN-US.
-5. Export ES-MX only, EN-US only, and both languages.
-6. Filter `Solo generados` / `Generated only` and edit one generated name.
-7. Confirm the entry changes to manual/edited and remains after filtering or switching preview language.
-8. Export the contribution and inspect `content.json`, `localization.json`, and `report.json`.
-9. Confirm the edited name uses `manual`, translated names use `lang`, and untouched fallbacks use `generated`.
-10. Run the included Node tests when a development environment is available.
+1. Abre `index.html`.
+2. Carga BP y RP juntos.
+3. Confirma que se muestran objetos, bloques, entidades, biomas o estructuras disponibles.
+4. Revisa que las recetas y estaciones sigan apareciendo.
+5. Abre **Obtención, loot y recompensas**:
+   - debe mostrar drops de bloques y entidades;
+   - loot de cofres si existen tablas `loot_tables/chests`;
+   - trades si existen archivos `trading/` o `trades/`;
+   - cantidades y condiciones cuando estén declaradas.
+6. Abre **Información futura para Codex**:
+   - spawn rules deben producir hábitats;
+   - feature rules deben producir registros de generación;
+   - jigsaw structures deben producir estructuras.
+7. Exporta la contribución.
+8. Comprueba que el ZIP incluya `knowledge.json` y `acquisition.json`.
+9. Ejecuta:
+
+```bash
+node tests/verify-schema-v3.mjs
+node tests/verify-knowledge-v1.mjs
+node tests/verify-ui.mjs
+```
+
+No deben aparecer errores.

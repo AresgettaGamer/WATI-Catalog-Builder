@@ -1,106 +1,66 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://wati.example/schema/v1/source.schema.json",
-  "title": "WATI Catalog Source v1",
+  "$id": "https://wati.example/schema/v3/source.schema.json",
+  "title": "WATI Catalog Source v3",
   "type": "object",
-  "required": [
-    "schemaVersion",
-    "source"
-  ],
+  "required": ["schemaVersion", "format", "generator", "generatorVersion", "source"],
   "properties": {
-    "schemaVersion": {
-      "const": 1
-    },
-    "generator": {
-      "type": "string"
-    },
-    "generatorVersion": {
-      "type": "string"
-    },
+    "schemaVersion": {"const": 3},
+    "format": {"const": "wati.catalog.source"},
+    "generator": {"const": "WATI Catalog Builder"},
+    "generatorVersion": {"type": "string"},
+    "releaseChannel": {"enum": ["beta", "stable", "development"]},
     "source": {
       "type": "object",
-      "required": [
-        "id",
-        "name",
-        "version",
-        "namespaces"
-      ],
+      "required": ["id", "name", "version", "manifestVersion", "namespaces", "primaryLocale", "exportedLocales", "generatedWith", "capabilities", "detection"],
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[a-z0-9_\\-]+$"
-        },
-        "name": {
-          "type": "string",
-          "minLength": 1
-        },
-        "author": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        },
-        "namespaces": {
-          "type": "array",
-          "items": {
-            "type": "string"
+        "id": {"type": "string", "pattern": "^[a-z0-9_\\-]+$"},
+        "name": {"type": "string", "minLength": 1},
+        "author": {"type": "string"},
+        "version": {"type": "string"},
+        "manifestVersion": {"type": "string"},
+        "namespaces": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "aliases": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "license": {"type": "string"},
+        "licenseStatus": {"enum": ["not_verified", "detected", "user_provided"]},
+        "licenseEvidence": {"type": ["string", "null"]},
+        "officialUrl": {"type": "string"},
+        "primaryLocale": {"enum": ["es_MX", "en_US"]},
+        "exportedLocales": {"type": "array", "items": {"enum": ["es_MX", "en_US"]}, "minItems": 1, "uniqueItems": true},
+        "generatedWith": {
+          "type": "object",
+          "required": ["builderVersion", "releaseChannel", "catalogSchemaVersion", "recipeSchemaVersion", "acquisitionSchemaVersion"],
+          "properties": {
+            "builderVersion": {"type": "string"},
+            "releaseChannel": {"type": "string"},
+            "catalogSchemaVersion": {"const": 3},
+            "recipeSchemaVersion": {"const": 3},
+            "acquisitionSchemaVersion": {"const": 2}
           },
-          "uniqueItems": true
+          "additionalProperties": true
         },
-        "aliases": {
-          "type": "array",
-          "items": {
-            "type": "string"
+        "capabilities": {"type": "object"},
+        "detection": {
+          "type": "object",
+          "required": ["mode", "namespaces", "probes", "hiddenByDefault"],
+          "properties": {
+            "mode": {"enum": ["content", "namespace", "pack", "core", "manual"]},
+            "namespaces": {"type": "array", "items": {"type": "string"}},
+            "probes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["kind", "id"],
+                "properties": {
+                  "kind": {"enum": ["item", "block", "entity"]},
+                  "id": {"type": "string", "pattern": "^[^:]+:.+$"}
+                },
+                "additionalProperties": false
+              }
+            },
+            "hiddenByDefault": {"type": "boolean"}
           },
-          "uniqueItems": true
-        },
-        "license": {
-          "type": "string"
-        },
-        "officialUrl": {
-          "type": "string"
-        },
-        "generatedBy": {
-          "type": "string"
-        },
-        "manifestVersion": {
-          "type": "string"
-        },
-        "analyzedPackVersions": {
-          "type": "array",
-          "items": {
-            "type": "object"
-          }
-        },
-        "licenseStatus": {
-          "enum": [
-            "not_verified",
-            "detected",
-            "user_provided"
-          ]
-        },
-        "licenseEvidence": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "primaryLocale": {
-          "enum": [
-            "es_MX",
-            "en_US"
-          ]
-        },
-        "exportedLocales": {
-          "type": "array",
-          "items": {
-            "enum": [
-              "es_MX",
-              "en_US"
-            ]
-          },
-          "minItems": 1,
-          "uniqueItems": true
+          "additionalProperties": true
         }
       },
       "additionalProperties": true

@@ -1,146 +1,71 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://wati.example/schema/v1/content.schema.json",
-  "title": "WATI Catalog Content v1",
+  "$id": "https://wati.example/schema/v3/content.schema.json",
+  "title": "WATI Catalog Content v3",
   "type": "object",
-  "required": [
-    "schemaVersion",
-    "sourceId",
-    "items",
-    "blocks",
-    "entities"
-  ],
+  "required": ["schemaVersion", "format", "sourceId", "entryKinds", "items", "blocks", "entities", "biomes", "structures", "ecosystems"],
   "$defs": {
+    "names": {
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    },
     "entry": {
       "type": "object",
-      "required": [
-        "id",
-        "type",
-        "fallbackName",
-        "internal"
-      ],
+      "required": ["id", "type", "sourceId", "namespace", "fallbackName", "catalogKey", "internal"],
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[^:]+:.+$"
+        "id": {"type": "string", "pattern": "^[^:]+:.+$"},
+        "type": {"enum": ["item", "block", "entity", "biome", "structure", "ecosystem"]},
+        "sourceId": {"type": "string"},
+        "namespace": {"type": "string"},
+        "fallbackName": {"type": "string"},
+        "catalogKey": {"type": "string"},
+        "runtimeLocalizationKey": {"type": ["string", "null"]},
+        "localizationKey": {"type": ["string", "null"]},
+        "localizationLocale": {"type": ["string", "null"]},
+        "nameSource": {"enum": ["lang", "generated", "manual"]},
+        "names": {"$ref": "#/$defs/names"},
+        "nameSources": {"type": "object", "additionalProperties": {"enum": ["lang", "generated", "manual"]}},
+        "localizationKeys": {"type": "object", "additionalProperties": {"type": ["string", "null"]}},
+        "localization": {"type": "object"},
+        "category": {"type": "string"},
+        "internal": {"type": "boolean"},
+        "sourcePath": {"type": "string"},
+        "icon": {
+          "type": ["object", "null"],
+          "properties": {
+            "textureKey": {"type": ["string", "null"]},
+            "texturePath": {"type": ["string", "null"]},
+            "resolvedBy": {"type": ["string", "null"]},
+            "confidence": {"type": "integer", "minimum": 0, "maximum": 3},
+            "duplicatedInContribution": {"const": false}
+          },
+          "additionalProperties": true
         },
-        "type": {
-          "enum": [
-            "item",
-            "block",
-            "entity"
-          ]
-        },
-        "fallbackName": {
-          "type": "string"
-        },
-        "localizationKey": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "category": {
-          "type": "string"
-        },
-        "internal": {
-          "type": "boolean"
-        },
-        "sourcePath": {
-          "type": "string"
-        },
-        "localizationLocale": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "nameSource": {
-          "enum": [
-            "lang",
-            "generated",
-            "manual"
-          ]
-        },
-        "names": {
+        "discoveryHints": {
           "type": "object",
           "properties": {
-            "es_MX": {
-              "type": "string"
-            },
-            "en_US": {
-              "type": "string"
-            }
+            "suggestedTriggers": {"type": "array", "items": {"type": "string"}},
+            "source": {"type": "string"}
           },
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "nameSources": {
-          "type": "object",
-          "additionalProperties": {
-            "enum": [
-              "lang",
-              "generated",
-              "manual"
-            ]
-          }
-        },
-        "localizationKeys": {
-          "type": "object",
-          "additionalProperties": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
+          "additionalProperties": true
         }
       },
       "additionalProperties": true
     }
   },
   "properties": {
-    "schemaVersion": {
-      "const": 1
-    },
-    "sourceId": {
-      "type": "string"
-    },
-    "items": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/entry"
-      }
-    },
-    "blocks": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/entry"
-      }
-    },
-    "entities": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/entry"
-      }
-    },
-    "primaryLocale": {
-      "enum": [
-        "es_MX",
-        "en_US"
-      ]
-    },
-    "exportedLocales": {
-      "type": "array",
-      "items": {
-        "enum": [
-          "es_MX",
-          "en_US"
-        ]
-      },
-      "minItems": 1,
-      "uniqueItems": true
-    }
+    "schemaVersion": {"const": 3},
+    "format": {"const": "wati.catalog.content"},
+    "sourceId": {"type": "string"},
+    "primaryLocale": {"enum": ["es_MX", "en_US"]},
+    "exportedLocales": {"type": "array", "items": {"enum": ["es_MX", "en_US"]}, "minItems": 1, "uniqueItems": true},
+    "entryKinds": {"type": "array", "items": {"type": "string"}},
+    "items": {"type": "array", "items": {"$ref": "#/$defs/entry"}},
+    "blocks": {"type": "array", "items": {"$ref": "#/$defs/entry"}},
+    "entities": {"type": "array", "items": {"$ref": "#/$defs/entry"}},
+    "biomes": {"type": "array", "items": {"$ref": "#/$defs/entry"}},
+    "structures": {"type": "array", "items": {"$ref": "#/$defs/entry"}},
+    "ecosystems": {"type": "array", "items": {"$ref": "#/$defs/entry"}}
   },
   "additionalProperties": true
 }
