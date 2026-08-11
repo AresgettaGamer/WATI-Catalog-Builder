@@ -1,8 +1,50 @@
-# WATI Catalog Builder — Changelog
+# WATI Catalog Builder — Historial de cambios
 
-Versions below v1.0.0 were test betas. Major versions are official public releases.
+## Release v1.2.1 — Primera publicación estable
 
-## v1.0.0 — Official release
+- Retira las etiquetas Beta de la interfaz, documentación y canal de salida.
+- Mantiene Schema 3, Acquisition Schema 2 y Knowledge Schema 1.
+- Conserva detección de loot, cofres, pesca, trueques, comercios, hábitats, worldgen, minerales y estructuras jigsaw.
+- Corrige las etiquetas inglesas residuales de métricas y tipos de paquete.
+- Detecta proyectos que ya incluyen WATI Runtime Provider y advierte que no deben publicar además una contribución estática duplicada para el mismo namespace.
+- Mantiene todo el análisis local en el navegador.
+
+## Beta v1.2.1 — Localización y nombres generados
+
+- Traduce toda la vista previa al idioma de interfaz: severidad, categorías, certeza, disponibilidad, contexto, generación y estructuras.
+- Los nombres generados para `es_MX` ahora traducen términos comunes del identifier y siguen marcados como generados/editables.
+- Corrige nombres Vanilla de estaciones como Mesa de trabajo, Horno y Soporte para pociones.
+- No cambia los esquemas 3/Knowledge 1 ni incorpora la contribución de prueba a WATI.
+
+
+## Beta v1.2.0 — Loot, mundo y conocimiento futuro
+
+- Añade `knowledge.json` con WATI Knowledge Schema 1.
+- Detecta biomas personalizados y estructuras `minecraft:jigsaw`.
+- Relaciona estructuras con `minecraft:structure_set`.
+- Analiza loot tables directas y anidadas.
+- Conserva cantidades, funciones, condiciones, pesos relativos, rolls y bonus rolls.
+- Clasifica cofres, pesca, trueques, regalos y otras tablas conocidas.
+- Extrae comercios de `trading/` y `trades/`.
+- Registra fabricación, fundición, pociones y herrería como métodos de obtención.
+- Extrae hábitats desde spawn rules.
+- Extrae bloques y filtros de generación desde features y feature rules.
+- Añade vistas previas de obtención y conocimiento en la interfaz.
+- Corrige el compilador para indexar acquisition por `target` y conservar datos enriquecidos.
+- El compilador genera `knowledge_data.js` sin exigir que Core lo importe todavía.
+- Señala scripts detectados como revisión manual, sin marcarlos como error.
+
+## Beta v1.1.1 — Compilador de WATI Core
+
+- Exportación WATI Schema 3, estaciones, nombres bilingües, edición manual y compilador de contribuciones.
+
+
+## Beta v1.1.0 — Corrección de errores
+
+- Corrección de errores
+
+
+## v1.0.0 — Release
 
 - Promotes the tested Beta v0.4.0 code to the first official Catalog Builder release.
 - Analyzes local `.mcaddon`, `.mcpack`, and `.zip` files without uploading them to a server.
