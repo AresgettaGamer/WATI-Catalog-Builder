@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Analizador local de add-ons de Minecraft Bedrock para WATI Core.">
-  <title>WATI Catalog Builder v1.2.1</title>
+  <title>WATI Catalog Builder v1.3.1</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
     <p data-i18n="hero.description">Analiza add-ons de Minecraft Bedrock y genera contribuciones normalizadas para WATI Core.</p>
   </div>
   <div class="hero-tools">
-    <span class="release" data-i18n="release.label">v1.2.1 · ESQUEMA 3 + CONOCIMIENTO 1</span>
+    <span class="release" data-i18n="release.label">v1.3.1 · ESQUEMA 3 + CONOCIMIENTO 2 + LENS SDK</span>
     <div class="language-switch" role="group" aria-label="Idioma de la interfaz" data-i18n-aria-label="language.switch">
       <button type="button" class="lang-btn" data-ui-lang="es_MX">ES-MX</button>
       <button type="button" class="lang-btn" data-ui-lang="en_US">EN-US</button>
@@ -25,6 +25,15 @@
 </header>
 <main>
   <section class="notice"><b data-i18n="privacy.title">Privacidad:</b> <span data-i18n="privacy.body">los paquetes se leen y procesan localmente. Esta página no los sube a ningún servidor.</span></section>
+
+  <section class="panel ecosystem">
+    <h2 data-i18n="ecosystem.title">Flujo WATI Ecosystem</h2>
+    <p data-i18n="ecosystem.body">Core puede actuar como fuente pública de facts para add-ons sin provider. Si el add-on sí puede modificarse, el Builder también puede generar un starter de WATI Lens Provider SDK para integrarlo sin esperar una actualización oficial.</p>
+    <div class="mode-grid">
+      <div><b data-i18n="ecosystem.core.title">Contribución para Core</b><span data-i18n="ecosystem.core.body">Exporta datos normalizados para revisar e integrar en WATI Core.</span></div>
+      <div><b data-i18n="ecosystem.lens.title">Starter Provider de Lens</b><span data-i18n="ecosystem.lens.body">Genera archivos SDK/starter para que el usuario los agregue al BP bajo su responsabilidad y licencia.</span></div>
+    </div>
+  </section>
 
   <section class="panel">
     <h2 data-i18n="load.title">1. Cargar paquete</h2>
@@ -85,7 +94,7 @@
   </section>
 
   <section class="panel">
-    <div class="section-title"><h2 data-i18n="results.title">3. Resultados</h2><button id="export-btn" disabled data-i18n="actions.export">Exportar contribución ZIP</button></div>
+    <div class="section-title"><h2 data-i18n="results.title">3. Resultados</h2><div class="export-actions"><button id="export-btn" disabled data-i18n="actions.export">Exportar contribución ZIP</button><button id="export-lens-btn" class="secondary" disabled data-i18n="actions.exportLens">Exportar starter Lens SDK</button></div></div>
     <div id="summary" class="summary"></div>
 
     <details open><summary data-i18n="results.packs">Paquetes detectados</summary><div class="table-wrap"><table><thead><tr><th data-i18n="table.type">Tipo</th><th data-i18n="table.name">Nombre</th><th data-i18n="table.publicVersion">Versión pública</th><th data-i18n="table.manifest">Manifest</th><th>UUID</th></tr></thead><tbody id="pack-preview"><tr><td colspan="5" class="empty" data-i18n="empty.start">Analiza un paquete para comenzar.</td></tr></tbody></table></div></details>
@@ -115,9 +124,9 @@
     <details open><summary data-i18n="results.issues">Problemas y advertencias</summary><div class="table-wrap"><table><thead><tr><th data-i18n="table.level">Nivel</th><th data-i18n="table.code">Código</th><th data-i18n="table.description">Descripción</th><th data-i18n="table.file">Archivo</th></tr></thead><tbody id="issues"><tr><td colspan="4" class="empty" data-i18n="empty.noAnalysis">Sin análisis.</td></tr></tbody></table></div></details>
   </section>
 
-  <section class="panel compact"><h2 data-i18n="scope.title">Alcance actual</h2><p data-i18n="scope.body">Detecta manifests, contenido, traducciones, iconos, recetas, estaciones, tablas de loot enlazadas, cofres, pesca, trueques, comercios, reglas de aparición, features, minerales y estructuras jigsaw. Exporta WATI Schema 3 más knowledge.json para futuras fichas detalladas de Codex. Los sistemas controlados exclusivamente por scripts todavía requieren revisión manual.</p></section>
+  <section class="panel compact"><h2 data-i18n="scope.title">Alcance actual</h2><p data-i18n="scope.body">Detecta manifests, contenido, traducciones, iconos, recetas, estaciones, tablas de loot enlazadas, cofres, pesca, trueques, comercios, reglas de aparición, features, minerales y estructuras jigsaw. Exporta WATI Schema 3 más Knowledge Schema 2, marca entradas técnicas como ocultas para Codex y genera un starter opcional para WATI Lens Provider SDK. Los sistemas controlados exclusivamente por scripts todavía requieren revisión manual.</p></section>
 </main>
-<footer>WATI Catalog Builder · AresgettaYT · Schema 3 · Knowledge 1</footer>
+<footer>WATI Catalog Builder · AresgettaYT · Schema 3 · Knowledge 2 · Lens SDK</footer>
 <script src="catalog-engine.js"></script><script src="app.js"></script>
 </body>
 </html>

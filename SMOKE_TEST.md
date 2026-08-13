@@ -1,4 +1,4 @@
-# Prueba rápida — WATI Catalog Builder v1.2.1
+# Prueba rápida — WATI Catalog Builder v1.3.1
 
 1. Abre `index.html`.
 2. Carga BP y RP juntos.
@@ -13,9 +13,12 @@
    - spawn rules deben producir hábitats;
    - feature rules deben producir registros de generación;
    - jigsaw structures deben producir estructuras.
-7. Exporta la contribución.
+7. Exporta la contribución para Core.
 8. Comprueba que el ZIP incluya `knowledge.json` y `acquisition.json`.
-9. Ejecuta:
+9. Comprueba que `acquisition.json` no incluya `minecraft:air`.
+10. Comprueba que helpers técnicos tengan `codexVisible: false`.
+11. Exporta el starter de Lens y comprueba que incluya `scripts/wati_lens_catalog.js`.
+12. Ejecuta:
 
 ```bash
 node tests/verify-schema-v3.mjs

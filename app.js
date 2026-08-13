@@ -5,11 +5,12 @@
 
   const TEXT = {
     es_MX: {
-      "page.title": "WATI Catalog Builder v1.2.1", "release.label": "v1.2.1 · ESQUEMA 3 + CONOCIMIENTO 1", "language.switch": "Idioma de la interfaz", "language.es": "Español (México)", "language.en": "Inglés (EE. UU.)",
+      "page.title": "WATI Catalog Builder v1.3.1", "release.label": "v1.3.1 · ESQUEMA 3 + CONOCIMIENTO 2 + LENS SDK", "language.switch": "Idioma de la interfaz", "language.es": "Español (México)", "language.en": "Inglés (EE. UU.)",
       "hero.description": "Analiza add-ons de Minecraft Bedrock y genera contribuciones normalizadas para WATI Core.",
       "privacy.title": "Privacidad:", "privacy.body": "los paquetes se leen y procesan localmente. Esta página no los sube a ningún servidor.",
       "load.title": "1. Cargar paquete", "load.drop": "Arrastra aquí .mcaddon, .mcpack o .zip", "load.hint": "Puedes cargar juntos el BP y el RP para obtener resultados más completos.",
-      "actions.analyze": "Analizar paquete", "actions.reset": "Limpiar", "actions.export": "Exportar contribución ZIP",
+      "actions.analyze": "Analizar paquete", "actions.reset": "Limpiar", "actions.export": "Exportar contribución ZIP", "actions.exportLens": "Exportar starter Lens SDK",
+      "ecosystem.title": "Flujo WATI Ecosystem", "ecosystem.body": "Core puede actuar como fuente pública de facts para add-ons sin provider. Si el add-on sí puede modificarse, el Builder también puede generar un starter de WATI Lens Provider SDK para integrarlo sin esperar una actualización oficial.", "ecosystem.core.title": "Contribución para Core", "ecosystem.core.body": "Exporta datos normalizados para revisar e integrar en WATI Core.", "ecosystem.lens.title": "Starter Provider de Lens", "ecosystem.lens.body": "Genera archivos SDK/starter para que el usuario los agregue al BP bajo su responsabilidad y licencia.",
       "identity.title": "2. Identificación del proyecto", "identity.helper": "El Builder propone estos datos a partir del manifest, las traducciones y archivos de licencia. Revísalos antes de exportar.",
       "identity.publicName": "Nombre público", "identity.sourceId": "ID de fuente", "identity.author": "Autor", "identity.publicVersion": "Versión pública analizada", "identity.manifestVersion": "Versión interna del manifest", "identity.license": "Licencia", "identity.aliases": "Alias separados por comas", "identity.namespaces": "Namespaces detectados", "identity.officialPage": "Página oficial",
       "placeholders.publicName": "Modern Furniture", "placeholders.sourceId": "modern_furniture", "placeholders.author": "Autor o equipo", "placeholders.aliases": "modern, modernfurniture, furniture", "placeholders.search": "Identifier, nombre, tipo o categoría",
@@ -19,9 +20,9 @@
       "filter.all": "Todos", "filter.translated": "Solo traducciones", "filter.generated": "Solo generados", "filter.manual": "Solo editados",
       "table.type": "Tipo", "table.name": "Nombre", "table.manifest": "Manifest", "table.identifier": "Identificador", "table.publicVersion": "Versión pública", "table.nameOrigin": "Origen del nombre", "table.category": "Categoría", "table.internal": "Interno", "table.level": "Nivel", "table.code": "Código", "table.description": "Descripción", "table.file": "Archivo", "table.tag": "Etiqueta", "table.resolution": "Resolución", "table.recipes": "Recetas", "table.target": "Resultado", "table.method": "Método", "table.source": "Fuente", "table.quantity": "Cantidad", "table.chance": "Azar/condición", "table.certainty": "Certeza", "table.subject": "Entrada",
       "empty.start": "Analiza un paquete para comenzar.", "empty.noAnalysis": "Sin análisis.", "empty.noIssues": "No se detectaron problemas estructurales.", "empty.noFilter": "No se encontró contenido con ese filtro.",
-      "scope.title": "Alcance actual", "scope.body": "Detecta contenido, traducciones, recetas, botín directo y anidado, cofres, pesca, trueques, comercios, aparición de entidades, generación del mundo, minerales y estructuras jigsaw. Exporta knowledge.json para las futuras fichas detalladas de Codex. La lógica exclusiva de scripts todavía requiere revisión manual.",
+      "scope.title": "Alcance actual", "scope.body": "Detecta contenido, traducciones, recetas, botín directo y anidado, cofres, pesca, trueques, comercios, aparición de entidades, generación del mundo, minerales y estructuras jigsaw. Exporta Knowledge 2, filtra loot vacío y marca helpers técnicos como ocultos para Codex. La lógica exclusiva de scripts todavía requiere revisión manual.",
       "status.ready": "WATI Catalog Builder v{version}. Todo el análisis se realiza en este navegador.",
-      "status.select": "Selecciona al menos un .mcaddon, .mcpack o .zip.", "status.filesReady": "Archivos listos. Para obtener mejores nombres, carga juntos el paquete de comportamiento (BP) y el paquete de recursos (RP).", "status.analyzing": "Descomprimiendo y analizando localmente…", "status.done": "Análisis terminado: {count} archivos procesados. Ningún archivo salió de tu dispositivo.", "status.exported": "Contribución exportada con WATI Schema 3 y Knowledge 1. Revisa report.json, acquisition.json y knowledge.json antes de enviarla.",
+      "status.select": "Selecciona al menos un .mcaddon, .mcpack o .zip.", "status.filesReady": "Archivos listos. Para obtener mejores nombres, carga juntos el paquete de comportamiento (BP) y el paquete de recursos (RP).", "status.analyzing": "Descomprimiendo y analizando localmente…", "status.done": "Análisis terminado: {count} archivos procesados. Ningún archivo salió de tu dispositivo.", "status.exported": "Contribución exportada con WATI Schema 3 y Knowledge 2. Revisa report.json, acquisition.json y knowledge.json antes de enviarla.", "status.lensExported": "Starter de WATI Lens Provider SDK exportado. Agrega los archivos al BP sólo si tienes permiso o la licencia lo permite.",
       "confirm.errors": "El análisis contiene {count} error(es). La contribución incluirá el reporte. ¿Deseas exportarla de todos modos?",
       "metrics.packs": "Paquetes", "metrics.items": "Objetos", "metrics.blocks": "Bloques", "metrics.entities": "Entidades", "metrics.biomes": "Biomas", "metrics.structures": "Estructuras", "metrics.recipes": "Recetas", "metrics.stations": "Estaciones", "metrics.acquisition": "Obtenciones", "metrics.loot": "Tablas de botín", "metrics.habitats": "Hábitats", "metrics.worldgen": "Generación", "metrics.officialNames": "Nombres oficiales", "metrics.generatedNames": "Nombres generados", "metrics.manualNames": "Nombres editados", "metrics.errors": "Errores", "metrics.warnings": "Advertencias", "metrics.info": "Información",
       "pack.behavior": "Comportamiento", "pack.resource": "Recursos", "origin.lang": "Traducción", "origin.generated": "Generado automáticamente", "origin.manual": "Editado", "boolean.yes": "Sí", "boolean.no": "No",
@@ -44,11 +45,12 @@
       "step.surface_structures": "estructuras de superficie", "step.top_layer_modification": "modificación de la capa superior"
     },
     en_US: {
-      "page.title": "WATI Catalog Builder v1.2.1", "release.label": "v1.2.1 · SCHEMA 3 + KNOWLEDGE 1", "language.switch": "Interface language", "language.es": "Spanish (Mexico)", "language.en": "English (US)",
+      "page.title": "WATI Catalog Builder v1.3.1", "release.label": "v1.3.1 · SCHEMA 3 + KNOWLEDGE 2 + LENS SDK", "language.switch": "Interface language", "language.es": "Spanish (Mexico)", "language.en": "English (US)",
       "hero.description": "Analyze Minecraft Bedrock add-ons and generate normalized contributions for WATI Core.",
       "privacy.title": "Privacy:", "privacy.body": "packs are read and processed locally. This page does not upload them to any server.",
       "load.title": "1. Load package", "load.drop": "Drop .mcaddon, .mcpack or .zip files here", "load.hint": "Load the BP and RP together whenever possible for more complete results.",
-      "actions.analyze": "Analyze package", "actions.reset": "Reset", "actions.export": "Export contribution ZIP",
+      "actions.analyze": "Analyze package", "actions.reset": "Reset", "actions.export": "Export contribution ZIP", "actions.exportLens": "Export Lens SDK starter",
+      "ecosystem.title": "WATI Ecosystem Flow", "ecosystem.body": "Core can act as the public facts source for add-ons without a provider. If the add-on can be modified, Builder can also generate a WATI Lens Provider SDK starter so it works with the ecosystem without waiting for an official update.", "ecosystem.core.title": "Core contribution", "ecosystem.core.body": "Exports normalized data for review and integration into WATI Core.", "ecosystem.lens.title": "Lens Provider starter", "ecosystem.lens.body": "Generates SDK/starter files for the user to add to the BP under their own responsibility and license.",
       "identity.title": "2. Project identification", "identity.helper": "The Builder suggests these details from manifests, translations and license files. Review them before exporting.",
       "identity.publicName": "Public name", "identity.sourceId": "Source ID", "identity.author": "Author", "identity.publicVersion": "Analyzed public version", "identity.manifestVersion": "Internal manifest version", "identity.license": "License", "identity.aliases": "Comma-separated aliases", "identity.namespaces": "Detected namespaces", "identity.officialPage": "Official page",
       "placeholders.publicName": "Modern Furniture", "placeholders.sourceId": "modern_furniture", "placeholders.author": "Author or team", "placeholders.aliases": "modern, modernfurniture, furniture", "placeholders.search": "Identifier, name, type or category",
@@ -58,9 +60,9 @@
       "filter.all": "All", "filter.translated": "Translations only", "filter.generated": "Generated only", "filter.manual": "Edited only",
       "table.type": "Type", "table.name": "Name", "table.manifest": "Manifest", "table.identifier": "Identifier", "table.publicVersion": "Public version", "table.nameOrigin": "Name source", "table.category": "Category", "table.internal": "Internal", "table.level": "Level", "table.code": "Code", "table.description": "Description", "table.file": "File", "table.tag": "Tag", "table.resolution": "Resolution", "table.recipes": "Recipes", "table.target": "Result", "table.method": "Method", "table.source": "Source", "table.quantity": "Quantity", "table.chance": "Chance/condition", "table.certainty": "Certainty", "table.subject": "Entry",
       "empty.start": "Analyze a package to begin.", "empty.noAnalysis": "No analysis yet.", "empty.noIssues": "No structural problems were detected.", "empty.noFilter": "No content matched this filter.",
-      "scope.title": "Current scope", "scope.body": "Detects content, translations, recipes, direct and nested loot, chests, fishing, bartering, trades, spawn rules, features, ores and jigsaw structures. Exports knowledge.json for future detailed Codex entries. Script-only logic still requires manual review.",
+      "scope.title": "Current scope", "scope.body": "Detects content, translations, recipes, direct and nested loot, chests, fishing, bartering, trades, spawn rules, features, ores and jigsaw structures. Exports Knowledge 2, filters empty loot and marks technical helpers as hidden for Codex. Script-only logic still requires manual review.",
       "status.ready": "WATI Catalog Builder v{version}. All analysis runs in this browser.",
-      "status.select": "Select at least one .mcaddon, .mcpack or .zip file.", "status.filesReady": "Files are ready. Load the Behavior Pack and Resource Pack together for the best names.", "status.analyzing": "Extracting and analyzing locally…", "status.done": "Analysis complete: {count} files processed. No file left your device.", "status.exported": "Contribution exported with WATI Schema 3 and Knowledge 1. Review report.json, acquisition.json and knowledge.json before submitting it.",
+      "status.select": "Select at least one .mcaddon, .mcpack or .zip file.", "status.filesReady": "Files are ready. Load the Behavior Pack and Resource Pack together for the best names.", "status.analyzing": "Extracting and analyzing locally…", "status.done": "Analysis complete: {count} files processed. No file left your device.", "status.exported": "Contribution exported with WATI Schema 3 and Knowledge 2. Review report.json, acquisition.json and knowledge.json before submitting it.", "status.lensExported": "WATI Lens Provider SDK starter exported. Add the files to the BP only if you have permission or the license allows it.",
       "confirm.errors": "The analysis contains {count} error(s). The contribution will include the report. Export anyway?",
       "metrics.packs": "Packs", "metrics.items": "Items", "metrics.blocks": "Blocks", "metrics.entities": "Entities", "metrics.biomes": "Biomes", "metrics.structures": "Structures", "metrics.recipes": "Recipes", "metrics.stations": "Stations", "metrics.acquisition": "Acquisition", "metrics.loot": "Loot tables", "metrics.habitats": "Habitats", "metrics.worldgen": "Worldgen", "metrics.officialNames": "Official names", "metrics.generatedNames": "Generated names", "metrics.manualNames": "Edited names", "metrics.errors": "Errors", "metrics.warnings": "Warnings", "metrics.info": "Information",
       "pack.behavior": "Behavior", "pack.resource": "Resources", "origin.lang": "Translation", "origin.generated": "Generated", "origin.manual": "Edited", "boolean.yes": "Yes", "boolean.no": "No",
@@ -95,7 +97,7 @@
   };
 
   const el = {
-    drop: $("drop-zone"), picker: $("file-picker"), analyze: $("analyze-btn"), export: $("export-btn"),
+    drop: $("drop-zone"), picker: $("file-picker"), analyze: $("analyze-btn"), export: $("export-btn"), exportLens: $("export-lens-btn"),
     status: $("status"), summary: $("summary"), issues: $("issues"), content: $("content-preview"), stations: $("station-preview"), acquisition: $("acquisition-preview"), knowledge: $("knowledge-preview"), packs: $("pack-preview"),
     nameSourceFilter: $("name-source-filter"), generatedWarning: $("generated-name-warning"),
     sourceName: $("source-name"), sourceId: $("source-id"), author: $("author"), version: $("version"),
@@ -146,8 +148,12 @@
   function receive(files) {
     state.files = [...files].filter(f => /\.(zip|mcpack|mcaddon)$/i.test(f.name));
     if (!state.files.length) { setStatus("status.select", {}, "warning"); return; }
+    state.analysis = null;
+    state.entries = [];
     updateDropDisplay();
     el.analyze.disabled = false;
+    el.export.disabled = true;
+    el.exportLens.disabled = true;
     setStatus("status.filesReady");
   }
 
@@ -455,11 +461,13 @@
     renderEvidence();
     renderLanguageStatus();
     el.export.disabled = false;
+    el.exportLens.disabled = false;
   }
 
   async function analyze({ refill = false } = {}) {
     el.analyze.disabled = true;
     el.export.disabled = true;
+    el.exportLens.disabled = true;
     setStatus("status.analyzing");
     try {
       if (!state.entries.length) {
@@ -519,6 +527,15 @@
     if (event.key === "Enter" && event.target.matches(".name-editor")) event.target.blur();
   });
 
+  function downloadZip(bytes, filename) {
+    const url = URL.createObjectURL(new Blob([bytes], { type: "application/zip" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+
   el.export.addEventListener("click", () => {
     if (!state.analysis) return;
     state.analysis = applyNameOverrides(engine.analyzeEntries(state.entries, metadata()));
@@ -529,13 +546,20 @@
     syncNameStats(state.analysis);
     const bytes = engine.exportContribution(state.analysis);
     const sourceId = state.analysis.source.source.id || "addon";
-    const url = URL.createObjectURL(new Blob([bytes], { type: "application/zip" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `WATI_Contribution_${sourceId}.zip`;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    downloadZip(bytes, `WATI_Contribution_${sourceId}.zip`);
     setStatus("status.exported", {}, "success");
+  });
+
+  el.exportLens.addEventListener("click", () => {
+    if (!state.analysis) return;
+    state.analysis = applyNameOverrides(engine.analyzeEntries(state.entries, metadata()));
+    fillMetadata(state.analysis.source.source);
+    render();
+    syncNameStats(state.analysis);
+    const bytes = engine.exportLensProviderStarter(state.analysis);
+    const sourceId = state.analysis.source.source.id || "addon";
+    downloadZip(bytes, `WATI_Lens_Provider_Starter_${sourceId}.zip`);
+    setStatus("status.lensExported", {}, "success");
   });
 
   el.reset.addEventListener("click", () => location.reload());

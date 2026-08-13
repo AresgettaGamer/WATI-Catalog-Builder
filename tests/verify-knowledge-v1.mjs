@@ -19,7 +19,7 @@ const entries = [
   { path:'BP/worldgen/structure_sets/test/ruin.json', virtualPath:'Test.mcaddon::BP/worldgen/structure_sets/test/ruin.json', data:json({'minecraft:structure_set':{description:{identifier:'test:ruin_set'},placement:{type:'minecraft:random_spread',spacing:20},structures:[{structure:'test:ruin',weight:1}]}}) }
 ];
 const analysis = engine.analyzeEntries(entries,{id:'knowledge_test',name:'Knowledge Test'});
-assert.equal(engine.KNOWLEDGE_SCHEMA_VERSION,1);
+assert.equal(engine.KNOWLEDGE_SCHEMA_VERSION,2);
 assert.equal(analysis.content.structures.length,1);
 assert(analysis.acquisition.methods.some(row=>row.method==='break_block'&&row.target==='test:gem'));
 assert(analysis.acquisition.methods.some(row=>row.method==='entity_drop'&&row.target==='test:rare'));
@@ -36,4 +36,4 @@ assert.equal(analysis.knowledge.structures[0].placements.length,1);
 const exported=await engine.readZip(engine.exportContribution(analysis));
 assert(exported.some(row=>row.name==='knowledge.json'));
 assert(exported.some(row=>row.name==='acquisition.json'));
-console.log('Knowledge v1: loot, trades, habitats, worldgen and structures approved.');
+console.log('Knowledge v2: loot, trades, habitats, worldgen and structures approved.');

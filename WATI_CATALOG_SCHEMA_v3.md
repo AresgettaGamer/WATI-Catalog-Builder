@@ -1,6 +1,6 @@
-# WATI Catalog Schema 3 + Knowledge 1
+# WATI Catalog Schema 3 + Knowledge 2
 
-v1.2.1 conserva los documentos Schema 3 existentes y añade información compatible hacia adelante.
+v1.3.1 conserva los documentos Schema 3 existentes y añade información compatible hacia adelante para WATI Core y WATI Lens.
 
 ## Documentos base
 
@@ -10,6 +10,18 @@ v1.2.1 conserva los documentos Schema 3 existentes y añade información compati
 - `stations.json` — `wati.catalog.stations`, schema 3.
 - `localization.json` — `wati.catalog.localization`, schema 3.
 - `report.json` — `wati.catalog.report`, schema 3.
+
+Las entradas de contenido pueden incluir:
+
+```json
+{
+  "visibility": "hidden",
+  "codexVisible": false,
+  "visibilityReason": "technical_or_internal_entry"
+}
+```
+
+Core puede conservar estas entradas como evidencia o para relaciones internas, pero Codex debe omitirlas de las fichas públicas salvo que un Provider o una revisión manual indique lo contrario.
 
 ## Acquisition Schema 2 enriquecido
 
@@ -43,7 +55,7 @@ v1.2.1 conserva los documentos Schema 3 existentes y añade información compati
 
 La probabilidad final no debe presentarse como exacta cuando existan condiciones, bonus rolls, funciones o tablas anidadas.
 
-## Knowledge Schema 1
+## Knowledge Schema 2
 
 `knowledge.json` contiene:
 
@@ -53,6 +65,10 @@ La probabilidad final no debe presentarse como exacta cuando existan condiciones
 - `structures`: jigsaw, pools, dimensiones sugeridas y placements.
 - `coverage.limitations`: límites que Codex debe comunicar sin tratarlos como errores.
 
-El documento es opcional para Core actual. El compilador puede transformarlo en `knowledge_data.js` para una versión futura.
+El documento es opcional para herramientas antiguas. Core 3.2.0 puede usarlo como fuente pública de facts para add-ons sin Provider propio.
 
 Los `lootProfiles` conservan `directOutputs`, referencias a tablas anidadas y `resolvedItems`. Este último campo permite construir en Core un índice inverso de objetos que pueden aparecer en cofres o contenedores sin duplicar toda la evidencia en `acquisition.json`.
+
+## Lens Provider Starter
+
+La exportación de Lens Provider Starter no forma parte del catálogo público de Core. Es un paquete auxiliar con archivos nuevos para integrar en un Behavior Pack cuando el usuario tenga permiso o la licencia del add-on lo permita. El Builder no reempaqueta el add-on original ni copia sus recursos.

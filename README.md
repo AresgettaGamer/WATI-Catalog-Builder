@@ -1,6 +1,6 @@
-# WATI Catalog Builder v1.2.1
+# WATI Catalog Builder v1.3.1
 
-Herramienta web local para analizar add-ons de Minecraft Bedrock y generar contribuciones normalizadas para WATI Core.
+Herramienta web local para analizar add-ons de Minecraft Bedrock, generar contribuciones normalizadas para WATI Core y preparar starters de WATI Lens Provider SDK.
 
 ## Uso
 
@@ -9,11 +9,13 @@ Herramienta web local para analizar add-ons de Minecraft Bedrock y generar contr
 3. Revisa la identidad, versión, autor, licencia e idiomas.
 4. Corrige los nombres generados cuando sea necesario.
 5. Revisa las vistas de contenido, estaciones, obtención y conocimiento futuro.
-6. Exporta la contribución ZIP.
+6. Exporta la contribución ZIP para Core o el starter de Lens Provider SDK.
 
-Todo se procesa localmente. El Builder no sube los paquetes a un servidor y no copia texturas de terceros dentro de la contribución.
+Todo se procesa localmente. El Builder no sube los paquetes a un servidor y no copia texturas de terceros dentro de la contribución. El starter de Lens no reempaqueta el add-on analizado: sólo genera archivos nuevos que el usuario puede agregar a un BP si tiene permiso o la licencia lo permite.
 
 ## Archivos exportados
+
+### Contribución para WATI Core
 
 - `source.json`: identidad, procedencia, capacidades y detección.
 - `content.json`: objetos, bloques, entidades, biomas y estructuras.
@@ -24,7 +26,15 @@ Todo se procesa localmente. El Builder no sube los paquetes a un servidor y no c
 - `localization.json`: claves de idioma utilizadas.
 - `report.json`: conteos, problemas y evidencia del análisis.
 
-## Cobertura de v1.2.1
+### Starter para WATI Lens Provider SDK
+
+- `scripts/wati_lens_provider.js`: helper estático compatible con el protocolo Provider de Lens.
+- `scripts/wati_lens_catalog.js`: catálogo generado para bloques, objetos y entidades detectadas.
+- `lens_provider_entries.json`: las mismas entradas como datos revisables.
+- `manifest_patch.example.json`: recordatorio para proyectos con Script API.
+- `INSTALL_LENS_PROVIDER.md` y `LICENSE_AND_PERMISSION_NOTICE.md`: instrucciones y aviso legal.
+
+## Cobertura de v1.3.1
 
 ### Contenido
 
@@ -34,6 +44,7 @@ Todo se procesa localmente. El Builder no sube los paquetes a un servidor y no c
 - Traducciones `es_MX` y `en_US`.
 - Referencias de iconos y texturas, sin copiar imágenes.
 - Nombres generados editables cuando no existe traducción; en `es_MX` se crea una traducción aproximada desde términos comunes del identifier.
+- Entradas técnicas marcadas con `visibility: "hidden"` y `codexVisible: false` para que Core pueda conservar evidencia sin mostrarlas como fichas normales.
 
 ### Fabricación
 
@@ -52,6 +63,7 @@ Todo se procesa localmente. El Builder no sube los paquetes a un servidor y no c
 - Pesca, trueques de piglins, regalos y fuentes de gameplay reconocibles.
 - Comercios de archivos `trading/` o `trades/`.
 - Resultados de recetas como método directo de obtención.
+- Loot vacío y `minecraft:air` filtrados de `acquisition.json` y `lootProfiles`.
 
 ### Información futura para Codex
 
@@ -72,7 +84,9 @@ Todo se procesa localmente. El Builder no sube los paquetes a un servidor y no c
 
 ## Compatibilidad
 
-La contribución conserva WATI Catalog Schema 3 y Acquisition Schema 2 para no romper el compilador actual. Los campos enriquecidos son adicionales. `knowledge.json` utiliza WATI Knowledge Schema 1 y puede ignorarse de forma segura hasta que Core/Codex lo consuman.
+La contribución conserva WATI Catalog Schema 3 y Acquisition Schema 2 para no romper el compilador actual. Los campos enriquecidos son adicionales. `knowledge.json` utiliza WATI Knowledge Schema 2 y puede alimentar Core/Codex cuando no exista un Provider propio del add-on.
+
+Los duplicados de definición se exportan como advertencias de revisión. Los overrides de `minecraft:*` usan `duplicate_content_override` para distinguirlos de conflictos entre contenido propio.
 
 ## Runtime Provider detection
 

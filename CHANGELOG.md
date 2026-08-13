@@ -1,5 +1,21 @@
 # WATI Catalog Builder — Historial de cambios
 
+## Release v1.3.1 — Higiene para Core y Codex
+
+- Filtra `minecraft:air` y entradas vacías de `acquisition.json` y `lootProfiles`.
+- Marca helpers, decoys, partes técnicas y entidades no visibles con `visibility: "hidden"` y `codexVisible: false`.
+- Mantiene esas entradas en la contribución para evidencia, pero da a Core/Codex una señal clara para no mostrarlas como fichas públicas.
+- Convierte duplicados de contenido en advertencias de revisión; los overrides Vanilla usan `duplicate_content_override`.
+- Añade resumen de entradas públicas/ocultas al reporte.
+
+## Release v1.3.0 — WATI Lens SDK y Knowledge 2
+
+- Actualiza la interfaz a Knowledge Schema 2 para alinearse con WATI Core 3.2.0.
+- Añade una sección WATI Ecosystem que diferencia contribuciones para Core y starters de Provider para Lens.
+- Añade exportación de starter WATI Lens Provider SDK con catálogo estático generado desde bloques, objetos y entidades detectadas.
+- Incluye aviso de licencia y permisos: el Builder procesa localmente y no reempaqueta ni redistribuye el add-on analizado.
+- Mantiene Schema 3 y Acquisition Schema 2 para compatibilidad con el compilador actual de Core.
+
 ## Release v1.2.1 — Primera publicación estable
 
 - Retira las etiquetas Beta de la interfaz, documentación y canal de salida.

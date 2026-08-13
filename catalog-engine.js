@@ -5,12 +5,12 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  const VERSION = "1.2.1";
+  const VERSION = "1.3.1";
   const RELEASE_CHANNEL = "stable";
   const SCHEMA_VERSION = 3;
   const RECIPE_SCHEMA_VERSION = 3;
   const ACQUISITION_SCHEMA_VERSION = 2;
-  const KNOWLEDGE_SCHEMA_VERSION = 1;
+  const KNOWLEDGE_SCHEMA_VERSION = 2;
   const textDecoder = new TextDecoder("utf-8");
   const textEncoder = new TextEncoder();
 
@@ -684,7 +684,7 @@
     const description = def?.description || {};
     const menu = description.menu_category || {};
     const components = def?.components || {};
-    if (/(^|[:_/.])(dummy|internal|collision|seat|helper|controller|marker|proxy)([_/.]|$)/i.test(`${id} ${path}`)) return "internal";
+    if (isTechnicalEntry(type, def, id, path)) return "internal";
     if (menu.category) return menu.category;
     if (components["minecraft:food"] || /food|meal|soup|stew|fruit|vegetable|tomato|onion|rice/.test(id)) return "food";
     if (/ore|ingot|mineral|gem/.test(id)) return "materials";
@@ -697,7 +697,23 @@
     if (type === "ecosystem") return "ecosystem";
     return "items";
   }
-  function isInternal(id, path, category) { return category === "internal" || /(^|[:_/.])(dummy|internal|collision|seat|helper|controller|marker|proxy)([_/.]|$)/i.test(`${id} ${path}`); }
+  function isTechnicalEntry(type, def, id, path) {
+    const text = `${id} ${path}`.toLowerCase();
+    if (/(^|[:_/.])(dummy|internal|collision|seat|helper|controller|marker|proxy|hitbox|sensor|anchor)([_/.]|$)/i.test(text)) return true;
+    if (type === "entity") {
+      if (/(^|[:_/.])(part\d*|body_part|projectile|bullet|beam|beam_fx|effect|fx|particle|preview|display|model|decoy|ambiententity|pedestal_break|guide_book|soot_yeet)([_/.]|$)/i.test(text)) return true;
+      const description = def?.description || {};
+      if (description.is_spawnable === false && description.is_summonable === false) return true;
+      if (description.is_spawnable === false && !def?.components?.["minecraft:health"]) return true;
+    }
+    return false;
+  }
+  function isInternal(type, def, id, path, category) { return category === "internal" || isTechnicalEntry(type, def, id, path); }
+  function entryVisibility(type, def, id, path, category, internal, nameSource) {
+    if (internal) return { visibility: "hidden", codexVisible: false, reason: "technical_or_internal_entry" };
+    if (type === "entity" && nameSource !== "lang" && def?.description?.is_spawnable === false) return { visibility: "hidden", codexVisible: false, reason: "non_spawnable_generated_entity" };
+    return { visibility: "public", codexVisible: true, reason: null };
+  }
 
   function normalizeIngredient(value) {
     if (typeof value === "string") return { item: cleanId(value), count: 1 };
@@ -719,7 +735,12 @@
 
   function resultRowsForKnowledge(value) {
     const values = Array.isArray(value) ? value : [value];
-    return values.filter(Boolean).map(row => typeof row === "string" ? { item: cleanId(row), count: 1 } : row).filter(row => row?.item);
+    return values.filter(Boolean).map(row => typeof row === "string" ? { item: cleanId(row), count: 1 } : row).filter(row => row?.item && isUsefulItemId(row.item));
+  }
+
+  function isUsefulItemId(id) {
+    const item = cleanId(id);
+    return Boolean(item && item !== "minecraft:air" && item !== "minecraft:empty" && !item.startsWith("minecraft:empty_"));
   }
 
 
@@ -921,7 +942,7 @@
         const quality = Number.isFinite(entry.quality) ? Number(entry.quality) : 0;
         if (type === "item" && typeof entry.name === "string") {
           const item = cleanId(entry.name);
-          if (item && !item.startsWith("minecraft:empty")) {
+          if (isUsefulItemId(item)) {
             rows.push({
               item,
               quantity: normalizedFunctions.quantity,
@@ -1198,6 +1219,8 @@
         const nameSource = nameSources[primaryLocale] || "generated";
         const resolvedKey = localizationKeys[primaryLocale] || translationKey;
         const resolvedLocale = nameSource === "lang" ? primaryLocale : null;
+        const internal = isInternal(type, def, id, path, category);
+        const visibility = entryVisibility(type, def, id, path, category, internal, nameSource);
         const entry = {
           id,
           type,
@@ -1220,7 +1243,10 @@
           },
           nameSource,
           category,
-          internal: isInternal(id, path, category),
+          internal,
+          visibility: visibility.visibility,
+          codexVisible: visibility.codexVisible,
+          visibilityReason: visibility.reason,
           sourcePath: path,
           icon: extractEntryIcon(type, id, def, resourceIndexes),
           discoveryHints: discoveryHintsFor(type)
@@ -1254,8 +1280,8 @@
           const previous = seen.get(key);
           const equivalent = previous.signature === signature;
           issues.push({
-            severity: equivalent ? "warning" : "error",
-            code: equivalent ? "duplicate_content_equivalent" : "duplicate_content_conflict",
+            severity: "warning",
+            code: equivalent ? "duplicate_content_equivalent" : namespaceOf(id) === "minecraft" ? "duplicate_content_override" : "duplicate_content_conflict",
             path,
             message: `${type} duplicado ${equivalent ? "con definición equivalente" : "con definición diferente"}: ${id}. Primera definición: ${previous.path}`
           });
@@ -1300,7 +1326,7 @@
       return `acq_${crc32(textEncoder.encode(raw)).toString(16).padStart(8, "0")}`;
     }
     function pushAcquisition(method) {
-      if (!method?.target || !method?.method || !method?.source) return;
+      if (!method?.target || !method?.method || !method?.source || !isUsefulItemId(method.target)) return;
       const row = prune({ ...method }) || {};
       row.id ||= methodId(row);
       const key = stableStringify([row.target, row.method, row.sourceType, row.source, row.details, row.evidence]);
@@ -1371,7 +1397,7 @@
     for (const [lootPath, record] of lootTables) {
       const context = classifyLootContext(lootPath);
       const directRecords = extractLootRecords(lootPath, lootTables, issues, { expandNested: false });
-      const direct = directRecords.map(row => prune({
+      const direct = directRecords.filter(row => isUsefulItemId(row.item)).map(row => prune({
         item: row.item,
         quantity: row.quantity,
         chance: row.chance,
@@ -1380,8 +1406,8 @@
         jsonPath: row.jsonPath
       }));
       const resolvedItems = contextualLootKinds.has(context.context)
-        ? unique(extractLootRecords(lootPath, lootTables, issues, { expandNested: true }).map(row => row.item))
-        : unique(directRecords.map(row => row.item));
+        ? unique(extractLootRecords(lootPath, lootTables, issues, { expandNested: true }).map(row => row.item).filter(isUsefulItemId))
+        : unique(directRecords.map(row => row.item).filter(isUsefulItemId));
       lootProfiles.push(prune({
         id: lootPath,
         context: context.context,
@@ -1566,6 +1592,10 @@
     const chosenLicense = metadata.license && metadata.license !== "Unknown / Not verified" ? metadata.license : licenseDetection.value;
     const licenseStatus = metadata.license && metadata.license !== "Unknown / Not verified" ? "user_provided" : licenseDetection.status;
     const aliases = metadata.aliases?.length ? metadata.aliases : buildAliases(nameCandidate, namespaceList);
+    const visibilitySummary = Object.fromEntries(Object.entries(content).map(([kind, list]) => [kind, {
+      public: list.filter(entry => entry.codexVisible !== false).length,
+      hidden: list.filter(entry => entry.codexVisible === false).length
+    }]));
     const source = {
       id: sourceId,
       name: nameCandidate,
@@ -1590,6 +1620,13 @@
         acquisitionSchemaVersion: ACQUISITION_SCHEMA_VERSION,
         knowledgeSchemaVersion: KNOWLEDGE_SCHEMA_VERSION
       },
+      exportPolicy: {
+        mode: "public_core_contribution",
+        internalEntriesPreserved: true,
+        codexVisibilityField: "codexVisible",
+        emptyLootFiltered: true,
+        duplicateDefinitionsRequireReview: true
+      },
       capabilities: {
         contentKinds: Object.entries(content).filter(([, list]) => list.length).map(([kind]) => ({ items: "item", blocks: "block", entities: "entity", biomes: "biome", structures: "structure", ecosystems: "ecosystem" })[kind]),
         recipes: recipes.length > 0,
@@ -1604,6 +1641,8 @@
         icons: content.items.some(entry => entry.icon) || content.blocks.some(entry => entry.icon),
         discoveryHints: true,
         futureKnowledge: true,
+        visibilityControls: true,
+        lensProviderStarter: true,
         runtimeProviderDetected
       },
       detection: buildDetectionDescriptor(content, namespaceList)
@@ -1626,6 +1665,8 @@
       summary: {
         packs: packInfo.length, behaviorPacks: behaviorPacks.length, resourcePacks: resourcePacks.length,
         files: entries.length, items: content.items.length, blocks: content.blocks.length, entities: content.entities.length,
+        hiddenItems: visibilitySummary.items?.hidden || 0, hiddenBlocks: visibilitySummary.blocks?.hidden || 0, hiddenEntities: visibilitySummary.entities?.hidden || 0,
+        publicItems: visibilitySummary.items?.public || 0, publicBlocks: visibilitySummary.blocks?.public || 0, publicEntities: visibilitySummary.entities?.public || 0,
         biomes: content.biomes.length, structures: content.structures.length, ecosystems: content.ecosystems.length,
         recipes: recipes.length, stations: stations.length, acquisition: acquisition.length,
         lootTables: lootTables.size, tradeTables: tradeTables.length, habitats: habitats.length, worldGeneration: worldGeneration.length, scriptFiles: scriptFiles.length,
@@ -1811,8 +1852,195 @@ Review every warning before submitting this archive. Do not attach third-party a
     return writeZip(files);
   }
 
+  const LENS_PROVIDER_SDK = `import { system } from "@minecraft/server";
+
+const PROTOCOL_VERSION = 1;
+const MAX_ENTRIES_PER_CHUNK = 32;
+
+function cleanText(value, fallback = "") {
+  return String(value ?? fallback).replace(/[\\u0000-\\u001f\\u007f]/g, "").slice(0, 256);
+}
+
+function cleanId(value) {
+  return cleanText(value).toLowerCase();
+}
+
+function clampPriority(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(-1000, Math.min(1000, Math.trunc(n)));
+}
+
+function normalizeEntry(entry) {
+  const kind = cleanText(entry?.kind);
+  const id = cleanId(entry?.id);
+  if (!["block", "item", "entity"].includes(kind) || !id.includes(":")) return null;
   return {
-    VERSION, RELEASE_CHANNEL, SCHEMA_VERSION, RECIPE_SCHEMA_VERSION, ACQUISITION_SCHEMA_VERSION, KNOWLEDGE_SCHEMA_VERSION, SUPPORTED_EXPORT_LOCALES, readZip, flattenArchives, analyzeEntries, exportContribution, writeZip,
+    kind,
+    id,
+    fallbackName: cleanText(entry.fallbackName, id),
+    priority: clampPriority(entry.priority),
+    refreshTicks: Math.max(0, Math.min(200, Number(entry.refreshTicks) || 40)),
+    dynamicData: false,
+    facts: entry.facts && typeof entry.facts === "object" ? entry.facts : undefined,
+    tags: Array.isArray(entry.tags) ? entry.tags.map(tag => cleanText(tag)).filter(Boolean).slice(0, 32) : undefined
+  };
+}
+
+function send(id, payload) {
+  system.sendScriptEvent(id, JSON.stringify(payload));
+}
+
+export function createWatiLensProvider(definition = {}) {
+  const entries = (definition.entries || []).map(normalizeEntry).filter(Boolean).slice(0, 2048);
+  const provider = {
+    protocol: PROTOCOL_VERSION,
+    id: cleanText(definition.id, "addon.lens_provider").slice(0, 80),
+    priority: clampPriority(definition.priority),
+    source: definition.source && typeof definition.source === "object" ? definition.source : {},
+    entries
+  };
+
+  function publish() {
+    const token = \`\${provider.id}:\${system.currentTick}\`;
+    send("wati_lens:provider_begin", { token, provider: { ...provider, entries: undefined }, total: entries.length });
+    for (let i = 0; i < entries.length; i += MAX_ENTRIES_PER_CHUNK) {
+      send("wati_lens:provider_chunk", { token, index: i / MAX_ENTRIES_PER_CHUNK, entries: entries.slice(i, i + MAX_ENTRIES_PER_CHUNK) });
+    }
+    send("wati_lens:provider_commit", { token });
+  }
+
+  system.afterEvents.scriptEventReceive.subscribe(event => {
+    if (event.id === "wati_lens:provider_discover") system.run(publish);
+  }, { namespaces: ["wati_lens"] });
+
+  system.run(publish);
+  return Object.freeze({ publish, provider });
+}
+`;
+
+  function safeJsString(value) {
+    return JSON.stringify(String(value ?? ""));
+  }
+
+  function sourceForLens(analysis) {
+    const source = analysis?.source?.source || {};
+    return {
+      addonName: source.name || "Analyzed Add-on",
+      sourceId: source.id || "addon",
+      version: source.version || "unknown",
+      author: source.author || "Unknown",
+      namespaces: source.namespaces || [],
+      generatedBy: `WATI Catalog Builder v${VERSION}`
+    };
+  }
+
+  function lensProviderEntries(analysis) {
+    const content = contentForExport(analysis.content || {});
+    const byKind = [
+      ...(content.blocks || []).map(entry => ({ ...entry, kind: "block" })),
+      ...(content.items || []).map(entry => ({ ...entry, kind: "item" })),
+      ...(content.entities || []).map(entry => ({ ...entry, kind: "entity" }))
+    ];
+    return byKind
+      .filter(entry => entry.id && String(entry.id).includes(":") && !entry.internal && entry.codexVisible !== false)
+      .map(entry => ({
+        kind: entry.kind,
+        id: entry.id,
+        fallbackName: entry.fallbackName || entry.names?.[content.primaryLocale] || titleCaseId(entry.id),
+        priority: 0,
+        refreshTicks: entry.kind === "entity" ? 10 : 40,
+        facts: entry.facts && typeof entry.facts === "object" ? entry.facts : undefined,
+        tags: entry.tags || []
+      }));
+  }
+
+  function lensCatalogSource(analysis) {
+    const source = sourceForLens(analysis);
+    const providerId = `${source.sourceId}.lens_provider`;
+    const entries = lensProviderEntries(analysis);
+    return `import { createWatiLensProvider } from "./wati_lens_provider.js";
+
+createWatiLensProvider({
+  id: ${safeJsString(providerId)},
+  priority: 0,
+  source: ${JSON.stringify(source, null, 2).replace(/\n/g, "\n  ")},
+  entries: ${JSON.stringify(entries, null, 2).replace(/\n/g, "\n  ")}
+});
+`;
+  }
+
+  function lensInstallReadme(analysis) {
+    const source = sourceForLens(analysis);
+    return `# WATI Lens Provider Starter
+
+Generated locally with WATI Catalog Builder v${VERSION} for ${source.addonName}.
+
+This ZIP does not contain the analyzed add-on. It only contains starter files that you can add to a Behavior Pack when you have permission from the author or the add-on license allows it.
+
+## Files
+
+- scripts/wati_lens_provider.js: static WATI Lens Provider SDK helper.
+- scripts/wati_lens_catalog.js: generated provider catalog for detected blocks, items and entities.
+- lens_provider_entries.json: same generated entries as data for manual review.
+- manifest_patch.example.json: module/dependency reminder for Script API projects.
+
+## Install
+
+1. Copy the scripts folder into the add-on Behavior Pack.
+2. Import the catalog once from your main script:
+
+\`\`\`js
+import "./wati_lens_catalog.js";
+\`\`\`
+
+3. Make sure the BP manifest has a script module and an @minecraft/server dependency compatible with your target Minecraft version.
+4. Test with WATI Lens installed. Lens will discover this provider automatically through script events.
+
+For advanced dynamic runtime lines, use the full Provider SDK shipped with WATI Lens source. This starter is intentionally static: it registers identifiers, names and reviewed facts without copying third-party code.
+`;
+  }
+
+  function lensPermissionNotice(analysis) {
+    const source = sourceForLens(analysis);
+    return `# Permission and license notice
+
+Analyzed add-on: ${source.addonName}
+Detected author: ${source.author}
+Detected version: ${source.version}
+
+WATI Catalog Builder processes files locally in the browser. It does not upload, store or redistribute the analyzed package.
+
+If you add this starter to a third-party add-on, you are responsible for checking the add-on license and getting permission when required. Do not publish a modified package that you are not allowed to distribute.
+
+Recommended public workflow:
+
+- For add-ons you do not own: publish only the WATI Core contribution files, not the original add-on.
+- For add-ons you own or can modify: add the Lens Provider starter to the BP and publish according to your own license.
+`;
+  }
+
+  function exportLensProviderStarter(analysis) {
+    const pretty = value => JSON.stringify(value, null, 2) + "\n";
+    const source = sourceForLens(analysis);
+    const entries = lensProviderEntries(analysis);
+    const manifestPatch = {
+      note: "Example only. Merge these ideas into the add-on BP manifest instead of replacing it blindly.",
+      modules: [{ type: "script", language: "javascript", entry: "scripts/main.js" }],
+      dependencies: [{ module_name: "@minecraft/server", version: "2.9.0" }]
+    };
+    return writeZip([
+      { name: "INSTALL_LENS_PROVIDER.md", data: lensInstallReadme(analysis) },
+      { name: "LICENSE_AND_PERMISSION_NOTICE.md", data: lensPermissionNotice(analysis) },
+      { name: "scripts/wati_lens_provider.js", data: LENS_PROVIDER_SDK },
+      { name: "scripts/wati_lens_catalog.js", data: lensCatalogSource(analysis) },
+      { name: "lens_provider_entries.json", data: pretty({ schemaVersion: 1, source, entries }) },
+      { name: "manifest_patch.example.json", data: pretty(manifestPatch) }
+    ]);
+  }
+
+  return {
+    VERSION, RELEASE_CHANNEL, SCHEMA_VERSION, RECIPE_SCHEMA_VERSION, ACQUISITION_SCHEMA_VERSION, KNOWLEDGE_SCHEMA_VERSION, SUPPORTED_EXPORT_LOCALES, readZip, flattenArchives, analyzeEntries, exportContribution, exportLensProviderStarter, writeZip,
     normalizeLegacyDescriptor, cleanPublicName, slugifySourceId, inferVersionCandidate, stripFormatting
   };
 });
